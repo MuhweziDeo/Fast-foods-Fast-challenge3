@@ -19,7 +19,7 @@ class APITest(unittest.TestCase):
         }
      
     def test_create_user(self):
-        res=self.client.post('/api/v2/users',
+        res=self.client.post('/api/v2/auth/users',
                                     data=json.dumps(self.user),
                                     content_type='application/json'
                                     )
