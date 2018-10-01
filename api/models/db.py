@@ -70,9 +70,3 @@ class DB():
                 print("Deleted")
         except(Exception, psycopg2.DatabaseError) as error:
             print(error, 'Failed')
-
-
-db = DB(host="localhost", user="postgres",
-        password="Adeo256.", dbname="fastfoodsapi")
-db.create_db_tables()
-db.drop_all_tables('orders', 'fastfoods', 'users')
