@@ -61,7 +61,18 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as error:
             print(error, "Dont Panic But  Table Creation Failed")
 
+    def drop_all_tables(self, *tables):
+        try:
+            for table in tables:
+                query = 'DROP TABLE IF EXISTS {}'.format(table)
+                self.cur.execute(query)
+                print(query)
+                print("Deleted")
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error, 'Failed')
+
 
 db = DB(host="localhost", user="postgres",
         password="Adeo256.", dbname="fastfoodsapi")
 db.create_db_tables()
+db.drop_all_tables('orders', 'fastfoods', 'users')
