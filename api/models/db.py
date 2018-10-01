@@ -1,9 +1,13 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
-
+import os
 
 class DB():
     def __init__(self, host, user, dbname, password):
+        if os.getenv('APP_SETTINGS') !='testing':
+            dbname="fastfoodsapi"
+        else:
+            dbname="fastfoods_test"
         try:
             self.connection = psycopg2.connect(
 
