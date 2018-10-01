@@ -7,13 +7,9 @@ class DB():
   def __init__(self, host, user, dbname, password):
     try:
       self.connection = psycopg2.connect(
-
-          host="localhost",
-          user="postgres",
-          dbname="fastfoodsapi",
-          password="sudo"
-      )
+          user='postgres', password='sudo', dbname='apimain', host='localhost')
       self.cur = self.connection.cursor()
+      self.connection.autocommit = True
       print('connection succeful {}'.format(dbname))
     except(Exception, psycopg2.DatabaseError) as e:
       print(e)
@@ -67,6 +63,7 @@ class DB():
       for table in tables:
         query = 'DROP TABLE IF EXISTS {}'.format(table)
         self.cur.execute(query)
+        self.connection.commit()
         print(query)
         print("Deleted")
     except(Exception, psycopg2.DatabaseError) as error:
@@ -93,9 +90,3 @@ class DB():
       print(error)
       # return None
       return {'message': 'Please choose a another name because username {} already exits'.format(username)}
-
-
-db = DB(host="localhost", user="postgres",
-        password="Adeo256.", dbname="fastfoodsapi")
-db.create_db_tables()
-db.drop_all_tables('orders', 'fastfoods', 'users')
