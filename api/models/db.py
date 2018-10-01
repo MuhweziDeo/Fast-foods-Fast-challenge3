@@ -1,10 +1,14 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import os
 
 class DB():
   def __init__(self, host, user, dbname, password):
+    if os.getenv('APP_SETTINGS') !="testing":
+      dbname="apimain"
+    else:
+      dbname="fastfoods_test"
     try:
       self.connection = psycopg2.connect(
           user='postgres', password='sudo', dbname='apimain', host='localhost')
