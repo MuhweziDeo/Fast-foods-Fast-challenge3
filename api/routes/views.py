@@ -3,7 +3,7 @@ from api.app import app
 from api.models.db import DB
 
 db = DB(user='postgres', password='sudo',
-        dbname='', host='localhost')
+        dbname=' ', host='localhost')
 
 api = Api(app, version='2.0', title='Fast-Foods-Api')
 
