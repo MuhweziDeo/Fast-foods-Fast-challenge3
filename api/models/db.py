@@ -27,7 +27,8 @@ class DB():
             CREATE TABLE IF not EXISTS  fastfoods(
               meal_id serial ,
               meal_name varchar(20) not null primary key unique,
-              price int not null
+              price int not null,
+              meal_status varchar(30) default 'Available'
             );
             """,
             """
