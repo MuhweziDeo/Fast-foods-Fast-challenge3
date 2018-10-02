@@ -16,6 +16,11 @@ user = api.model('User', {
     'password': fields.String(description="user password", required=True, min_length=4),
 })
 
+meal = api.model('Meal Option', {
+    'meal_name': fields.String(description="meal_name", required=True, min_length=4),
+    'price': fields.Integer(description="price", required=True, min_length=4),
+})
+
 
 @api.route('/auth/signup')
 class Signup(Resource):
@@ -47,3 +52,13 @@ class Login(Resource):
                 return {'message': 'password verification failed'}
         else:
             return {'message': 'username {} deosnt exist'.format(username)}
+
+
+@api.route('/menu')
+class Menu(Resource):
+    @api.expect(meal)
+    def post(self):
+        data = api.payload
+        meal_name = data['meal_name']
+        price = data['price']
+        return db.add_meal(meal_name, price)
