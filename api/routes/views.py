@@ -92,15 +92,23 @@ class Login(Resource):
 
 @api.route('/menu')
 class Menu(Resource):
+    @jwt_required
+    @api.doc(params=jwt)
     @api.expect(meal)
     def post(self):
-        data = api.payload
-        meal_name = data['meal_name']
-        price = data['price']
-        meal = db.find_meal_by_name(meal_name)
-        if meal:
-            return {'message': 'meal with name {} already exists'.format(meal_name)}
-        return db.add_meal(meal_name, price)
+        current_user = get_jwt_identity()
+        user = db.find_by_username(current_user)
+        admin = user[3]
+        if admin == True:
+            data = api.payload
+            meal_name = data['meal_name']
+            price = data['price']
+            meal = db.find_meal_by_name(meal_name)
+            if meal:
+                return {'message': 'meal with name {} already exists'.format(meal_name)}
+            return db.add_meal(meal_name, price)
+        else:
+            return {'message': 'You cant preform this action because you are unauthorised'}
 
     def get(self):
         return db.get_menu()
