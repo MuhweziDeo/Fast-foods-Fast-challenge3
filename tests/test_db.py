@@ -18,3 +18,7 @@ class DBTestCase(unittest.TestCase):
         self.assertIn('user created', str(query))
         query = self.db.find_by_username('dee')
         self.assertIn('dee', str(query))
+
+    def test_create_meal_option(self):
+        query = self.db.add_meal('pizza', 4000)
+        self.assertIn('meal pizza added', str(query))

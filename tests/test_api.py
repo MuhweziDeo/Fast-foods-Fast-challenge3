@@ -25,6 +25,10 @@ class DatabaseTest(unittest.TestCase):
             'username': 'dee',
             'password': 'deodee'
         }
+        self.meal = {
+            "meal_name": 'pizza',
+            'price': 4000
+        }
 
     def test_create_user(self):
         res = self.client.post('/api/v2/auth/signup',
@@ -66,3 +70,10 @@ class DatabaseTest(unittest.TestCase):
                                      data=json.dumps(self.invalid_password),
                                      content_type='application/json')
         self.assertIn('password verification failed', str(res_login.data))
+
+    def test_add_meal_option(self):
+        res = self.client.post('/api/v2/menu',
+                               data=json.dumps(self.meal),
+                               content_type="application/json"
+                               )
+        res = self.assertIn('meal pizza added', str(res.data))
