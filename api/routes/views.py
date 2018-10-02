@@ -103,3 +103,9 @@ class UserOrders(Resource):
 class Orders(Resource):
     def get(self):
         return db.get_all_orders()
+
+
+@api.route('/orders/<int:orderId>')
+class Order(Resource):
+    def get(self, orderId):
+        return db.get_order(orderId)
