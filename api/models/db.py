@@ -5,31 +5,31 @@ import os
 
 
 class DB():
-  def __init__(self, host, user, dbname, password):
-    if os.getenv('APP_SETTINGS') != "testing":
-      dbname = "apimain"
-    else:
-      dbname = "fastfoods_test"
-    try:
-      self.connection = psycopg2.connect(
-          user='postgres', password='sudo', dbname='', host='localhost')
-      self.cur = self.connection.cursor()
-      self.connection.autocommit = True
-      print('connection succeful {}'.format(dbname))
-    except(Exception, psycopg2.DatabaseError) as e:
-      print(e)
+    def __init__(self, host, user, dbname, password):
+        if os.getenv('APP_SETTINGS') != "testing":
+            dbname = "apimain"
+        else:
+            dbname = "fastfoods_test"
+        try:
+            self.connection = psycopg2.connect(
+                user='postgres', password='sudo', dbname='', host='localhost')
+            self.cur = self.connection.cursor()
+            self.connection.autocommit = True
+            print('connection succeful {}'.format(dbname))
+        except(Exception, psycopg2.DatabaseError) as e:
+            print(e)
 
-  def create_db_tables(self):
-    queries = (
+    def create_db_tables(self):
+        queries = (
 
-        """
+            """
             CREATE TABLE IF not EXISTS  fastfoods(
               meal_id serial ,
               meal_name varchar(20) not null primary key unique,
               price int not null
             );
             """,
-        """
+            """
             CREATE TABLE IF not EXISTS  users(
               user_id serial primary key,
               username varchar(25) not null unique,
@@ -39,7 +39,7 @@ class DB():
             );
             """,
 
-        """
+            """
             CREATE TABLE IF not EXISTS orders(
               orderid serial primary key,
               user_id int not null,
@@ -54,44 +54,61 @@ class DB():
             );
 
             """
-    )
-    try:
-      for query in queries:
-        self.cur.execute(query)
-        self.connection.commit()
-        print('Tables Created')
-    except(Exception, psycopg2.DatabaseError) as error:
-      print(error, "Dont Panic But  Table Creation Failed")
+        )
+        try:
+            for query in queries:
+                self.cur.execute(query)
+                self.connection.commit()
+                print('Tables Created')
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error, "Dont Panic But  Table Creation Failed")
 
-  def drop_all_tables(self, *tables):
-    try:
-      for table in tables:
-        query = 'DROP TABLE IF EXISTS {}'.format(table)
-        self.cur.execute(query)
-        self.connection.commit()
-        print(query)
-        print("Deleted")
-    except(Exception, psycopg2.DatabaseError) as error:
-      print(error, 'Failed')
+    def drop_all_tables(self, *tables):
+        try:
+            for table in tables:
+                query = 'DROP TABLE IF EXISTS {}'.format(table)
+                self.cur.execute(query)
+                self.connection.commit()
+                print(query)
+                print("Deleted")
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error, 'Failed')
 
-     # users
-  def hash_password(self, password):
-    return generate_password_hash(password)
+           # users
+    def hash_password(self, password):
+        return generate_password_hash(password)
 
-  def confirm_password_hash(self, password, pasword_hash):
-    return check_password_hash(pasword_hash, password)
+    def confirm_password_hash(self, password, pasword_hash):
+        return check_password_hash(pasword_hash, password)
 
-  def register_user(self, username, password):
-    try:
-      password = self.hash_password(password)
-      # new_user=User(username,password)
-      create_user = "INSERT INTO users(username,password) VALUES ('{}','{}')".format(
-                    username, password)
-      print(create_user)
-      self.cur.execute(create_user)
-      # print(new_user)
-      return {'message': 'user created'}
-    except(Exception, psycopg2.DatabaseError) as error:
-      print(error)
-      # return None
-      return {'message': 'Please choose a another name because username {} already exits'.format(username)}
+    def register_user(self, username, password):
+        try:
+            password = self.hash_password(password)
+            # new_user=User(username,password)
+            create_user = "INSERT INTO users(username,password) VALUES ('{}','{}')".format(
+                          username, password)
+            print(create_user)
+            self.cur.execute(create_user)
+            # print(new_user)
+            return {'message': 'user created'}
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            # return None
+            return {'message': 'Please choose a another name because username {} already exits'.format(username)}
+
+    def find_by_username(self, username):
+        try:
+            query = "SELECT * from users where username='{}'".format(username)
+            self.cur.execute(query)
+            user = self.cur.fetchone()
+            if user:
+                user_id = user[0]
+                username = user[1]
+                password = user[2]
+                admin = user[3]
+                return user_id, username, password, admin
+            else:
+                return None
+        except(Exception, psycopg2.DatabaseError) as e:
+            print(e)
+            return {'message': 'unable to complete request'}
