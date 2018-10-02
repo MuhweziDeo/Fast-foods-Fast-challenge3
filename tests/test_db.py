@@ -22,3 +22,7 @@ class DBTestCase(unittest.TestCase):
     def test_create_meal_option(self):
         query = self.db.add_meal('pizza', 4000)
         self.assertIn('meal pizza added', str(query))
+
+    def test_get_menu(self):
+        query = self.db.get_menu()
+        self.assertIn('Menu', str(query))

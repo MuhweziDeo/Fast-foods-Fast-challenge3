@@ -88,3 +88,12 @@ class DatabaseTest(unittest.TestCase):
                                  content_type="application/json"
                                  )
         self.assertIn('meal with name pizza already exists', str(res_2.data))
+
+    def test_get_menu(self):
+        res = self.client.post('/api/v2/menu',
+                               data=json.dumps(self.meal),
+                               content_type="application/json"
+                               )
+        res = self.client.get('/api/v2/menu')
+
+        self.assertIn("Menu", str(res.data))
