@@ -21,6 +21,13 @@ meal = api.model('Meal Option', {
     'price': fields.Integer(description="price", required=True, min_length=4),
 })
 
+order = api.model('Order', {
+    'location': fields.String,
+    'quantity': fields.Integer,
+    'meal': fields.String,
+    'user_id': fields.Integer
+})
+
 
 @api.route('/auth/signup')
 class Signup(Resource):
@@ -68,3 +75,16 @@ class Menu(Resource):
 
     def get(self):
         return db.get_menu()
+
+
+@api.route('/users/orders')
+class UserOrders(Resource):
+    @api.expect(order)
+    def post(self):
+        """ Post An Order"""
+        data = api.payload
+        meal = data['meal']
+        location = data['location']
+        quantity = data['quantity']
+        user_id = data['user_id']
+        return db.create_order(location, quantity, user_id, meal)
