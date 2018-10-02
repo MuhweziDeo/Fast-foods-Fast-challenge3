@@ -65,3 +65,6 @@ class Menu(Resource):
         if meal:
             return {'message': 'meal with name {} already exists'.format(meal_name)}
         return db.add_meal(meal_name, price)
+
+    def get(self):
+        return db.get_menu()
