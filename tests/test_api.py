@@ -21,6 +21,10 @@ class DatabaseTest(unittest.TestCase):
             'username': 'deodee',
             'password': 'dee'
         }
+        self.invalid_password = {
+            'username': 'dee',
+            'password': 'deodee'
+        }
 
     def test_create_user(self):
         res = self.client.post('/api/v2/auth/signup',
@@ -51,3 +55,14 @@ class DatabaseTest(unittest.TestCase):
                                      data=json.dumps(self.invalid_username),
                                      content_type='application/json')
         self.assertIn('username deodee deosnt exist', str(res_login.data))
+
+    def test_invalid_password_login(self):
+        res = self.client.post('/api/v2/auth/signup',
+                               data=json.dumps(self.user),
+                               content_type='application/json'
+                               )
+        self.assertIn("user created", str(res.data))
+        res_login = self.client.post('/api/v2/auth/login',
+                                     data=json.dumps(self.invalid_password),
+                                     content_type='application/json')
+        self.assertIn('password verification failed', str(res_login.data))
