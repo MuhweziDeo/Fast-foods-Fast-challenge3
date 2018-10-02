@@ -61,4 +61,7 @@ class Menu(Resource):
         data = api.payload
         meal_name = data['meal_name']
         price = data['price']
+        meal = db.find_meal_by_name(meal_name)
+        if meal:
+            return {'message': 'meal with name {} already exists'.format(meal_name)}
         return db.add_meal(meal_name, price)
