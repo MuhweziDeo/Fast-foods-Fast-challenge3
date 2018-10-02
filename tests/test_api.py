@@ -19,7 +19,7 @@ class DatabaseTest(unittest.TestCase):
         }
 
     def test_create_user(self):
-        res = self.client.post('/api/v2/auth/users',
+        res = self.client.post('/api/v2/auth/signup',
                                data=json.dumps(self.user),
                                content_type='application/json'
                                )
@@ -27,7 +27,7 @@ class DatabaseTest(unittest.TestCase):
         self.assertIn("user created", str(res.data))
 
     def test_user_login(self):
-        res = self.client.post('/api/v2/auth/users',
+        res = self.client.post('/api/v2/auth/signup',
                                data=json.dumps(self.user),
                                content_type='application/json'
                                )
