@@ -237,6 +237,23 @@ class DB():
             print(e)
             return {'message': 'Sorry Unable To Complete Request'}
 
+    def find_meal_by_id(self, meal_id):
+        # find meal by id
+        try:
+            query = "SELECT meal_name FROM fastfoods WHERE meal_id='{}'".format(
+                meal_id)
+            self.cur = self.connection.cursor()
+            self.cur.execute(query)
+            fastfood = self.cur.fetchone()
+            if fastfood:
+                meal_id = fastfood[0]
+                return meal_id
+            else:
+                return None
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error, 'Failed')
+            return {'error': str(error)}
+
     def update_meal(self, meal_id, price, meal_status):
         # update meal
         try:
