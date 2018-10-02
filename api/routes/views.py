@@ -1,4 +1,5 @@
 from flask_restplus import Api, Resource, fields
+from flask_jwt_extended import jwt_required, JWTManager, create_access_token, get_jwt_identity
 from api.app import app
 from api.models.db import DB
 
@@ -6,7 +7,8 @@ db = DB(user='postgres', password='sudo',
         dbname=' ', host='localhost')
 
 api = Api(app, prefix='/api/v2', version='2.0', title='Fast-Foods-Api')
-
+jwt = JWTManager(app)
+app.config['JWT_SECRET_KEY'] = 'thisissecretkhahxcahiahiac'
 
 db.create_db_tables()
 # db.drop_all_tables('orders','users','fastfoods')
@@ -16,6 +18,12 @@ user = api.model('User', {
     'password': fields.String(description="user password", required=True, min_length=4),
     'confirm': fields.String
 })
+
+userlogin = api.model('User-login', {
+    'username': fields.String(description="username", required=True, min_length=4),
+    'password': fields.String(description="user password", required=True, min_length=4)
+})
+
 
 meal = api.model('Meal Option', {
     'meal_name': fields.String(description="meal_name", required=True, min_length=4),
@@ -39,6 +47,12 @@ orderstatus = api.model('order-status', {
 })
 
 
+jwt = {'Authorization': {'Authorization Bearer': 'Bearer',
+                         'in': 'header',
+                         'type': '',
+                         'description': 'Bearer <token>'}}
+
+
 @api.route('/auth/signup')
 class Signup(Resource):
     @api.expect(user)
@@ -59,7 +73,7 @@ class Signup(Resource):
 
 @api.route('/auth/login')
 class Login(Resource):
-    @api.expect(user)
+    @api.expect(userlogin)
     def post(self):
         data = api.payload
         username = data['username']
@@ -68,7 +82,9 @@ class Login(Resource):
         if user:
             pasword_hash = user[2]
             if db.confirm_password_hash(attempted_password, pasword_hash):
-                return {'message': 'You have been Verified'}
+                token = create_access_token(identity=username)
+                return {'message': 'You have been Verified',
+                        'token': token}
             else:
                 return {'message': 'password verification failed'}
         else:
