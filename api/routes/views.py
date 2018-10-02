@@ -97,3 +97,9 @@ class UserOrders(Resource):
         """Get orders of a specifi user"""
         user_id = 1
         return db.get_order_history_for_a_user(user_id)
+
+
+@api.route('/orders')
+class Orders(Resource):
+    def get(self):
+        return db.get_all_orders()
