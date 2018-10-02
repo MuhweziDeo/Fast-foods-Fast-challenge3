@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from datetime import datetime
 
 
 class DB():
@@ -155,3 +156,16 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as error:
             print(error, 'Failed')
             return {'error': str(error)}
+    # orders
+
+    def create_order(self, location, quantity, user_id, meal):
+        # create an order
+        try:
+            date = str(datetime.utcnow())
+            query = "INSERT INTO orders(location,quantity,meal_name,user_id,order_date) VALUES('{}',{},'{}',{},'{}')".format(
+                location, quantity, meal, user_id, date)
+            self.cur.execute(query)
+            return {'meaasge': 'Order has been placed succesfully'}
+        except(Exception, psycopg2.DatabaseError) as e:
+            print(e)
+            return {"message": "order placed successfully"}
