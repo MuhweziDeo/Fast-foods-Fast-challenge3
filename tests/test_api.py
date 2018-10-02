@@ -154,6 +154,7 @@ class DatabaseTest(unittest.TestCase):
     res = self.client.get('/api/v2/orders')
 
     self.assertIn("All Orders", str(res.data))
+
   def test_get_order(self):
     res = self.client.post('/api/v2/auth/signup',
                            data=json.dumps(self.user),
@@ -167,7 +168,6 @@ class DatabaseTest(unittest.TestCase):
                            data=json.dumps(self.order),
                            content_type="application/json"
                            )
-    res = self.client.get('/api/v2/orders/1')
+    res_order = self.client.get('/api/v2/orders/1')
 
-    self.assertIn("1", str(res.data))
-
+    self.assertIn("pizza", str(res_order.data))
