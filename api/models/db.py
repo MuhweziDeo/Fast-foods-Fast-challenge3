@@ -139,3 +139,18 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as error:
             print(error, 'Failed')
             return {'error': str(error)}
+
+    def get_menu(self):
+        # get all meals/menu
+        try:
+            query = "SELECT * FROM fastfoods"
+            self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
+            self.cur.execute(query)
+            fastfoods = self.cur.fetchall()
+            if fastfoods:
+                return {'menu': fastfoods}
+            else:
+                return {'message': 'No Meals available yet on the Menu'}
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error, 'Failed')
+            return {'error': str(error)}
