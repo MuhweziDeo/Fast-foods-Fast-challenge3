@@ -28,6 +28,10 @@ order = api.model('Order', {
     'user_id': fields.Integer
 })
 
+orderstatus = api.model('order-status', {
+    "status": fields.String
+})
+
 
 @api.route('/auth/signup')
 class Signup(Resource):
@@ -109,3 +113,14 @@ class Orders(Resource):
 class Order(Resource):
     def get(self, orderId):
         return db.get_order(orderId)
+
+    @api.expect(orderstatus)
+    def put(self, orderId):
+        """ Update order status"""
+        order = db.find_order_by_id(orderId)
+        if order:
+            data = api.payload
+            status = data['status']
+            return db.update_order_status(orderId, status)
+        else:
+            return {'message': 'order {} doesnt exist'.format(orderId)}
