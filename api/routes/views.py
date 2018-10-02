@@ -38,8 +38,7 @@ mealupdate = api.model('Meal Update', {
 order = api.model('Order', {
     'location': fields.String,
     'quantity': fields.Integer,
-    'meal': fields.String,
-    'user_id': fields.Integer
+    'meal': fields.String
 })
 
 orderstatus = api.model('order-status', {
@@ -131,6 +130,8 @@ class Meal(Resource):
 
 @api.route('/users/orders')
 class UserOrders(Resource):
+    @jwt_required
+    @api.doc(params=jwt)
     @api.expect(order)
     def post(self):
         """ Post An Order"""
@@ -138,12 +139,18 @@ class UserOrders(Resource):
         meal = data['meal']
         location = data['location']
         quantity = data['quantity']
-        user_id = data['user_id']
+        current_user = get_jwt_identity()
+        user = db.find_by_username(current_user)
+        user_id = user[0]
         return db.create_order(location, quantity, user_id, meal)
 
+    @jwt_required
+    @api.doc(params=jwt)
     def get(self):
-        """Get orders of a specifi user"""
-        user_id = 1
+        """Get orders of a specific user"""
+        current_user = get_jwt_identity()
+        user = db.find_by_username(current_user)
+        user_id = user[0]
         return db.get_order_history_for_a_user(user_id)
 
 
