@@ -1,6 +1,5 @@
 import unittest
 from api.models.db import DB
-from datetime import datetime
 
 
 class DBTestCase(unittest.TestCase):
@@ -29,8 +28,7 @@ class DBTestCase(unittest.TestCase):
         self.assertIn('Menu', str(query))
 
     def test_create_order(self):
-        date = str(datetime.utcnow())
         query = self.db.register_user('dee', 'dee')
         query = self.db.add_meal('pizza', 4000)
-        query = self.create_order("location", 4, "pizza", date, 1)
+        query = self.db.create_order("location", 4, "pizza", 1)
         self.assertIn("order placed successfully", str(query))
