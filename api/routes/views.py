@@ -46,13 +46,13 @@ class Signup(Resource):
         data = api.payload
         username = data['username']
         password = data['password']
-        confirm_password=data['confirm']
+        confirm_password = data['confirm']
         user = db.find_by_username(username)
         if user is None:
-            if confirm_password==password:
+            if confirm_password == password:
                 return db.register_user(username, password)
             else:
-                return {'message':'passwords must match '}
+                return {'message': 'passwords must match '}
         else:
             return {'message': 'username {} already taken'.format(username)}
 
@@ -104,6 +104,13 @@ class Meal(Resource):
             return db.update_meal(meal_id, price, meal_status)
         return {'message': 'You are trying to update a meal that doesnt exist',
                 "help": 'check and confirm meal with id {} exists'.format(meal_id)}
+
+    def delete(self, meal_id):
+        """Delete FastFood"""
+        fastfood = db.find_meal_by_id(meal_id)
+        if fastfood is None:
+            return {'message': 'meal with meal_id "{}" you tried to delete doesnt exit'.format(meal_id)}
+        return db.delete_meal(meal_id)
 
 
 @api.route('/users/orders')
