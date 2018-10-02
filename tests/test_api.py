@@ -116,7 +116,24 @@ class DatabaseTest(unittest.TestCase):
                                content_type="application/json"
                                )
         res = self.client.post('/api/v2/users/orders',
-                               data=json.dumps(self.orders),
+                               data=json.dumps(self.order),
                                content_type="application/json"
                                )
         self.assertIn("order placed successfully", str(res.data))
+
+    def test_get_orders_for_a_user(self):
+        res = self.client.post('/api/v2/auth/signup',
+                               data=json.dumps(self.user),
+                               content_type='application/json'
+                               )
+        res = self.client.post('/api/v2/menu',
+                               data=json.dumps(self.meal),
+                               content_type="application/json"
+                               )
+        res = self.client.post('/api/v2/users/orders',
+                               data=json.dumps(self.order),
+                               content_type="application/json"
+                               )
+        res = self.client.get('/api/v2/users/orders'
+                              )
+        self.assertIn('orders for user with id 1', str(res.data))

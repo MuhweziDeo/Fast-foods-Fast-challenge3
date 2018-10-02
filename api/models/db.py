@@ -165,7 +165,7 @@ class DB():
             query = "INSERT INTO orders(location,quantity,meal_name,user_id,order_date) VALUES('{}',{},'{}',{},'{}')".format(
                 location, quantity, meal, user_id, date)
             self.cur.execute(query)
-            return {'meaasge': 'Order has been placed succesfully'}
+            return {'meaasge': 'order placed successfully'}
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
-            return {"message": "order placed successfully"}
+            return {"message": "unable to place order"}
