@@ -81,6 +81,17 @@ class Menu(Resource):
         return db.get_menu()
 
 
+@api.route('/meal/<int:meal_id>')
+class Meal(Resource):
+    @api.expect(meal)
+    def put(self, meal_id):
+        """update fastfood"""
+        data = api.payload
+        meal_name = data['meal_name']
+        price = data['price']
+        return db.update_meal(meal_id, price, meal_name)
+
+
 @api.route('/users/orders')
 class UserOrders(Resource):
     @api.expect(order)
@@ -92,9 +103,8 @@ class UserOrders(Resource):
         quantity = data['quantity']
         user_id = data['user_id']
         return db.create_order(location, quantity, user_id, meal)
+
 # orders
-
-
 @api.route('/users/orders')
 class UserOrders(Resource):
     def get(self):
