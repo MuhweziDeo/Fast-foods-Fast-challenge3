@@ -14,6 +14,7 @@ db.create_db_tables()
 user = api.model('User', {
     'username': fields.String(description="username", required=True, min_length=4),
     'password': fields.String(description="user password", required=True, min_length=4),
+    'confirm': fields.String
 })
 
 meal = api.model('Meal Option', {
@@ -45,9 +46,13 @@ class Signup(Resource):
         data = api.payload
         username = data['username']
         password = data['password']
+        confirm_password=data['confirm']
         user = db.find_by_username(username)
         if user is None:
-            return db.register_user(username, password)
+            if confirm_password==password:
+                return db.register_user(username, password)
+            else:
+                return {'message':'passwords must match '}
         else:
             return {'message': 'username {} already taken'.format(username)}
 
