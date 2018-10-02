@@ -197,3 +197,4 @@ class DB():
                 return {'message': 'No orders have been placed yet'}
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
+            return {'message': 'unable to retrive orders'}
