@@ -237,11 +237,11 @@ class DB():
             print(e)
             return {'message': 'Sorry Unable To Complete Request'}
 
-    def update_meal(self, meal_id, price, meal_name):
+    def update_meal(self, meal_id, price, meal_status):
         # update meal
         try:
-            query = "UPDATE fastfoods SET meal_name='{}',price={} WHERE meal_id={}".format(
-                meal_name, price, meal_id)
+            query = "UPDATE fastfoods SET meal_status='{}',price={} WHERE meal_id={}".format(
+                meal_status, price, meal_id)
             self.cur.execute(query)
             print(query)
             return {'message': 'meal updated'}
