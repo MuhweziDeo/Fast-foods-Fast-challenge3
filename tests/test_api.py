@@ -2,6 +2,7 @@ import unittest
 import json
 from api.app import app
 from api.models.db import DB
+from datetime import datetime
 
 
 class DatabaseTest(unittest.TestCase):
@@ -28,6 +29,13 @@ class DatabaseTest(unittest.TestCase):
         self.meal = {
             "meal_name": 'pizza',
             'price': 4000
+        }
+        self.order = {
+            "location": "kla",
+            "quantity": 4,
+            "meal": "pizza",
+            "user_id": 1,
+            "date": str(datetime.utcnow())
         }
 
     def test_create_user(self):
@@ -97,3 +105,18 @@ class DatabaseTest(unittest.TestCase):
         res = self.client.get('/api/v2/menu')
 
         self.assertIn("menu", str(res.data))
+
+    def test_create_order(self):
+        res = self.client.post('/api/v2/auth/signup',
+                               data=json.dumps(self.user),
+                               content_type='application/json'
+                               )
+        res = self.client.post('/api/v2/menu',
+                               data=json.dumps(self.meal),
+                               content_type="application/json"
+                               )
+        res = self.client.post('/api/v2/users/orders',
+                               data=json.dumps(self.orders),
+                               content_type="application/json"
+                               )
+        self.assertIn("order placed successfully", str(res.data))
