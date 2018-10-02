@@ -99,6 +99,7 @@ class DB():
     def find_by_username(self, username):
         try:
             query = "SELECT * from users where username='{}'".format(username)
+            self.cur = self.connection.cursor()
             self.cur.execute(query)
             user = self.cur.fetchone()
             if user:
