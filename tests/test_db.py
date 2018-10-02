@@ -61,3 +61,8 @@ class DBTestCase(unittest.TestCase):
         query = self.db.create_order("location", 4, 1, 'pizza')
         query = self.db.update_order_status(1, "Accepted")
         self.assertIn("order status updated", str(query))
+
+    def test_update_meal_option(self):
+        query = self.db.add_meal('pizza', 4000)
+        query = self.db.update_meal('1', "burger")
+        self.assertIn("meal updated")

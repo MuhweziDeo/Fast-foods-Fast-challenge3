@@ -193,3 +193,16 @@ class DatabaseTest(unittest.TestCase):
                                 content_type="application/json"
                                 )
     self.assertIn("order status updated", str(res_order.data))
+
+  def test_update_meal(self):
+    res = self.client.post('/api/v2/menu',
+                           data=json.dumps(self.meal),
+                           content_type="application/json"
+                           )
+    self.assertIn('meal pizza added', str(res.data))
+    res = self.client.put('/api/v2/meal/1',
+                           data=json.dumps(self.meal),
+                           content_type="application/json"
+                           )
+    self.assertIn("meal updated", str(res.data))
+
