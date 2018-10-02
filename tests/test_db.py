@@ -64,5 +64,5 @@ class DBTestCase(unittest.TestCase):
 
     def test_update_meal_option(self):
         query = self.db.add_meal('pizza', 4000)
-        query = self.db.update_meal('1', "burger")
+        query = self.db.update_meal(1, 2000, "burger")
         self.assertIn("meal updated", str(query))
