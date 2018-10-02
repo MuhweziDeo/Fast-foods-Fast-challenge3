@@ -17,7 +17,7 @@ user = api.model('User', {
 })
 
 
-@api.route('/auth/users')
+@api.route('/auth/signup')
 class Signup(Resource):
     @api.expect(user)
     def post(self):
