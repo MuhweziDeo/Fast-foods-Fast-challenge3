@@ -19,9 +19,20 @@ class DatabaseTest(unittest.TestCase):
         }
 
     def test_create_user(self):
-        res = self.client.post('/auth/users',
+        res = self.client.post('/api/v2/auth/users',
                                data=json.dumps(self.user),
                                content_type='application/json'
                                )
         self.assertEqual(res.status_code, 200)
         self.assertIn("user created", str(res.data))
+
+    def test_user_login(self):
+        res = self.client.post('/api/v2/auth/users',
+                               data=json.dumps(self.user),
+                               content_type='application/json'
+                               )
+        self.assertIn("user created", str(res.data))
+        res_login = self.client.post('/api/v2/auth/login',
+                                     data=json.dumps(self.user),
+                                     content_type='application/json')
+        self.assertIn('You have been Verified', str(res_login.data))
