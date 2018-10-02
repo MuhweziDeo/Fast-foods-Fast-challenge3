@@ -112,11 +112,30 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
             return {'message': 'unable to complete request'}
-    def add_meal(self,meal_name,price):
+
+    def add_meal(self, meal_name, price):
         try:
-            query="INSERT INTO fastfoods(meal_name,price) VALUES('{}',{})".format(meal_name,price)
+            query = "INSERT INTO fastfoods(meal_name,price) VALUES('{}',{})".format(
+                meal_name, price)
             self.cur.execute(query)
-            return {'message':"meal {} added".format(meal_name)}
-        except(Exception,psycopg2.DatabaseError) as e:
+            return {'message': "meal {} added".format(meal_name)}
+        except(Exception, psycopg2.DatabaseError) as e:
             print(e)
-            return {'error':"Cant Add Meal at the moment"}
+            return {'error': "Cant Add Meal at the moment"}
+
+    def find_meal_by_name(self, meal_name):
+        # find meal by name
+        try:
+            query = "SELECT meal_name FROM fastfoods WHERE meal_name='{}'".format(
+                meal_name)
+            self.cur = self.connection.cursor()
+            self.cur.execute(query)
+            fastfood = self.cur.fetchone()
+            if fastfood:
+                meal_name = fastfood[1]
+                return meal_name
+            else:
+                return None
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error, 'Failed')
+            return {'error': str(error)}
