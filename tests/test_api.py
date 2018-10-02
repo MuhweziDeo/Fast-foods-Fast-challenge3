@@ -189,7 +189,7 @@ class DatabaseTest(unittest.TestCase):
                            content_type="application/json"
                            )
     res_order = self.client.put('/api/v2/orders/1',
-                                data=json.dumps(self.order),
+                                data=json.dumps(self.order_status),
                                 content_type="application/json"
                                 )
     self.assertIn("order status updated", str(res_order.data))
