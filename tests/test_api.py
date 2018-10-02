@@ -96,4 +96,4 @@ class DatabaseTest(unittest.TestCase):
                                )
         res = self.client.get('/api/v2/menu')
 
-        self.assertIn("Menu", str(res.data))
+        self.assertIn("menu", str(res.data))
