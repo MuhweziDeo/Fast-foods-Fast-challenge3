@@ -27,7 +27,7 @@ class Signup(Resource):
         return db.register_user(username, password)
 
 
-@api.route('auth/login')
+@api.route('/auth/login')
 class Login(Resource):
     @api.expect(user)
     def post(self):
