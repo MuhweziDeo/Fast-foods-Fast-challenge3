@@ -5,7 +5,7 @@ from api.models.db import DB
 db = DB(user='postgres', password='sudo',
         dbname=' ', host='localhost')
 
-api = Api(app,prefix='/api/v2' version='2.0', title='Fast-Foods-Api')
+api = Api(app, prefix='/api/v2', version='2.0', title='Fast-Foods-Api')
 
 
 db.create_db_tables()
