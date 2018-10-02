@@ -234,5 +234,16 @@ class DatabaseTest(unittest.TestCase):
                           data=json.dumps(self.meal_update),
                           content_type="application/json"
                           )
-    self.assertIn(
-        "You are trying to update a meal that doesnt exist", str(res.data))
+    self.assertIn("You are trying to update a meal that doesnt exist", str(res.data))
+
+  def test_delete_meal(self):
+    res = self.client.post('/api/v2/menu',
+                           data=json.dumps(self.meal),
+                           content_type="application/json"
+                           )
+    self.assertIn('meal pizza added', str(res.data))
+    res = self.client.delete('/api/v2/meal/1',
+                          data=json.dumps(self.meal_update),
+                          content_type="application/json"
+                          )
+    self.assertIn("meal deleted", str(res.data))
