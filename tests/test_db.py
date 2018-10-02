@@ -51,5 +51,6 @@ class DBTestCase(unittest.TestCase):
         query = self.db.register_user('dee', 'dee')
         query = self.db.add_meal('pizza', 4000)
         query = self.db.create_order("location", 4, 1, 'pizza')
-        query = self.db.get_order()
+        query = self.db.get_order(1)
         self.assertIn('1', str(query))
+        self.assertIn('pizza', str(query))
