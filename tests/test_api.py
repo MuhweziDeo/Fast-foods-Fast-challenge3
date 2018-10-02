@@ -76,4 +76,15 @@ class DatabaseTest(unittest.TestCase):
                                data=json.dumps(self.meal),
                                content_type="application/json"
                                )
-        res = self.assertIn('meal pizza added', str(res.data))
+        self.assertIn('meal pizza added', str(res.data))
+
+    def test_add_already_existing_meal(self):
+        res = self.client.post('/api/v2/menu',
+                               data=json.dumps(self.meal),
+                               content_type="application/json"
+                               )
+        res_2 = self.client.post('/api/v2/menu',
+                                 data=json.dumps(self.meal),
+                                 content_type="application/json"
+                                 )
+        self.assertIn('meal with name pizza already exists', str(res_2.data))
