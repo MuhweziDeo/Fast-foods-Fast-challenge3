@@ -116,7 +116,7 @@ class DatabaseTest(unittest.TestCase):
                                content_type="application/json"
                                )
         res = self.client.post('/api/v2/users/orders',
-                               data=json.dumps(self.orders),
+                               data=json.dumps(self.order),
                                content_type="application/json"
                                )
         self.assertIn("order placed successfully", str(res.data))
