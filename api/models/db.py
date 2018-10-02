@@ -235,3 +235,15 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
             return {'message': 'Sorry Unable To Complete Request'}
+
+    def update_meal(self, meal_id, price, meal_name):
+        # update meal
+        try:
+            query = "UPDATE fastfoods SET meal_name='{}',price={} WHERE meal_id={}".format(
+                meal_name, price, meal_id)
+            self.cur.execute(query)
+            print(query)
+            return {'message': 'meal updated'}
+        except(Exception, psycopg2.DatabaseError) as e:
+            print(e)
+            return {'Message': 'Unable to complete Request'}
