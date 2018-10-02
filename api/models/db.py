@@ -183,4 +183,17 @@ class DB():
                 return {'message': 'user with id {} has placed any orders yet'.format(user_id)}
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
-            return {'message':'unable to retrive orders'}
+            return {'message': 'unable to retrive orders'}
+
+    def get_all_orders(self):
+        try:
+            query = "SELECT * FROM orders"
+            self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
+            self.cur.execute(query)
+            orders = self.cur.fetchall()
+            if orders:
+                return {"All Orders": orders}
+            else:
+                return {'message': 'No orders have been placed yet'}
+        except(Exception, psycopg2.DatabaseError) as e:
+            print(e)
