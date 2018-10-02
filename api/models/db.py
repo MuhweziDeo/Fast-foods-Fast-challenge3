@@ -211,6 +211,20 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
 
+    def find_order_by_id(self, orderid):
+          # find order by id
+        try:
+            query = "SELECT * FROM orders WHERE orderid='{}'".format(orderid)
+            self.cur.execute(query)
+            order = self.cur.fetchone()
+            if order:
+                return {'order_details': order}
+            else:
+                return None
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error, 'Failed')
+            return {'error': str(error)}
+
     def update_order_status(self, orderId, status):
         try:
             query = "UPDATE orders SET status='{}' WHERE orderid={}".format(
