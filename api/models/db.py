@@ -198,3 +198,15 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
             return {'message': 'unable to retrive orders'}
+
+    def get_order(self, orderId):
+        try:
+            query = "SELECT * FROM orders WHERE orderid={}".format(orderId)
+            self.cur.execute(query)
+            order = self.cur.fetchone()
+            # if order:
+            return {'order_details': order}
+            # else:
+            #     return {'message':'order with orderId {} doesnt exist'.format(orderId)}
+        except(Exception, psycopg2.DatabaseError) as e:
+            print(e)
