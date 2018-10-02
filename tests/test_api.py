@@ -37,6 +37,9 @@ class DatabaseTest(unittest.TestCase):
         "user_id": 1,
         "date": str(datetime.utcnow())
     }
+    self.order_status = {
+        "status": "Accepted"
+    }
 
   def test_create_user(self):
     res = self.client.post('/api/v2/auth/signup',
@@ -171,3 +174,22 @@ class DatabaseTest(unittest.TestCase):
     res_order = self.client.get('/api/v2/orders/1')
 
     self.assertIn("pizza", str(res_order.data))
+
+  def test_update_order_status(self):
+    res = self.client.post('/api/v2/auth/signup',
+                           data=json.dumps(self.user),
+                           content_type='application/json'
+                           )
+    res = self.client.post('/api/v2/menu',
+                           data=json.dumps(self.meal),
+                           content_type="application/json"
+                           )
+    res = self.client.post('/api/v2/users/orders',
+                           data=json.dumps(self.order),
+                           content_type="application/json"
+                           )
+    res_order = self.client.put('/api/v2/orders/1',
+                                data=json.dumps(self.order),
+                                content_type="application/json"
+                                )
+    self.assertIn("order status updated", str(res_order.data))
