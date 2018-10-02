@@ -141,11 +141,6 @@ class UserOrders(Resource):
         user_id = data['user_id']
         return db.create_order(location, quantity, user_id, meal)
 
-# orders
-
-
-@api.route('/users/orders')
-class UserOrders(Resource):
     def get(self):
         """Get orders of a specifi user"""
         user_id = 1
