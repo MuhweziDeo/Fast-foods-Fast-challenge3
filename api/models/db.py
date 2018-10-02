@@ -265,3 +265,13 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
             return {'Message': 'Unable to complete Request'}
+
+    def delete_meal(self, meal_id):
+        # delete fastfood
+        try:
+            query = 'DELETE From fastfoods WHERE meal_id={}'.format(meal_id)
+            self.cur.execute(query)
+            return {'message': 'meal deleted'}
+        except(Exception, psycopg2.DatabaseError) as e:
+            print(e)
+            return {'message': "Something Went Wrong Unable to Complete request"}
