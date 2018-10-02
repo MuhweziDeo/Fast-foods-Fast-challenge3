@@ -16,11 +16,13 @@ class DatabaseTest(unittest.TestCase):
     self.client = self.app.test_client()
     self.user = {
         'username': 'dee',
-        'password': 'dee'
+        'password': 'dee',
+        'confirm': 'dee'
     }
     self.invalid_username = {
         'username': 'deodee',
-        'password': 'dee'
+        'password': 'dee',
+        'confirm': 'dee'
     }
     self.invalid_password = {
         'username': 'dee',
@@ -220,4 +222,5 @@ class DatabaseTest(unittest.TestCase):
                           data=json.dumps(self.meal_update),
                           content_type="application/json"
                           )
-    self.assertIn("You are trying to update a meal that doesnt exist", str(res.data))
+    self.assertIn(
+        "You are trying to update a meal that doesnt exist", str(res.data))
