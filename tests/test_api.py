@@ -44,9 +44,7 @@ class DatabaseTest(unittest.TestCase):
     self.order = {
         "location": "kla",
         "quantity": 4,
-        "meal": "pizza",
-        "user_id": 1,
-        "date": str(datetime.utcnow())
+        "meal": "pizza"
     }
     self.order_status = {
         "status": "Accepted"
@@ -132,13 +130,21 @@ class DatabaseTest(unittest.TestCase):
                            data=json.dumps(self.user),
                            content_type='application/json'
                            )
+    res_login = self.client.post('/api/v2/auth/login',
+                                 data=json.dumps(self.user),
+                                 content_type='application/json')
+    login_data = res_login.json
+    self.token = login_data['token']
+
     res = self.client.post('/api/v2/menu',
                            data=json.dumps(self.meal),
                            content_type="application/json"
                            )
     res = self.client.post('/api/v2/users/orders',
                            data=json.dumps(self.order),
-                           content_type="application/json"
+                           content_type="application/json",
+                           headers={'Authorization':
+                                    'Bearer {}'.format(self.token)}
                            )
     self.assertIn("order placed successfully", str(res.data))
 
@@ -147,15 +153,27 @@ class DatabaseTest(unittest.TestCase):
                            data=json.dumps(self.user),
                            content_type='application/json'
                            )
+    res_login = self.client.post('/api/v2/auth/login',
+                                 data=json.dumps(self.user),
+                                 content_type='application/json')
+    self.assertIn('You have been Verified', str(res_login.data))
+    login_data = res_login.json
+    self.token = login_data['token']
+
     res = self.client.post('/api/v2/menu',
                            data=json.dumps(self.meal),
                            content_type="application/json"
                            )
+
     res = self.client.post('/api/v2/users/orders',
                            data=json.dumps(self.order),
-                           content_type="application/json"
+                           content_type="application/json",
+                           headers={'Authorization':
+                                    'Bearer {}'.format(self.token)}
                            )
-    res = self.client.get('/api/v2/users/orders'
+    res = self.client.get('/api/v2/users/orders',
+                          headers={'Authorization':
+                                   'Bearer {}'.format(self.token)}
                           )
     self.assertIn('orders for user with id 1', str(res.data))
 
@@ -164,13 +182,22 @@ class DatabaseTest(unittest.TestCase):
                            data=json.dumps(self.user),
                            content_type='application/json'
                            )
+
     res = self.client.post('/api/v2/menu',
                            data=json.dumps(self.meal),
                            content_type="application/json"
                            )
+    res_login = self.client.post('/api/v2/auth/login',
+                                 data=json.dumps(self.user),
+                                 content_type='application/json')
+    login_data = res_login.json
+    self.token = login_data['token']
+
     res = self.client.post('/api/v2/users/orders',
                            data=json.dumps(self.order),
-                           content_type="application/json"
+                           content_type="application/json",
+                           headers={'Authorization':
+                                    'Bearer {}'.format(self.token)}
                            )
     res = self.client.get('/api/v2/orders')
 
@@ -185,9 +212,17 @@ class DatabaseTest(unittest.TestCase):
                            data=json.dumps(self.meal),
                            content_type="application/json"
                            )
+    res_login = self.client.post('/api/v2/auth/login',
+                                 data=json.dumps(self.user),
+                                 content_type='application/json')
+    login_data = res_login.json
+    self.token = login_data['token']
+
     res = self.client.post('/api/v2/users/orders',
                            data=json.dumps(self.order),
-                           content_type="application/json"
+                           content_type="application/json",
+                           headers={'Authorization':
+                                    'Bearer {}'.format(self.token)}
                            )
     res_order = self.client.get('/api/v2/orders/1')
 
@@ -202,10 +237,19 @@ class DatabaseTest(unittest.TestCase):
                            data=json.dumps(self.meal),
                            content_type="application/json"
                            )
+    res_login = self.client.post('/api/v2/auth/login',
+                                 data=json.dumps(self.user),
+                                 content_type='application/json')
+    login_data = res_login.json
+    self.token = login_data['token']
+
     res = self.client.post('/api/v2/users/orders',
                            data=json.dumps(self.order),
-                           content_type="application/json"
+                           content_type="application/json",
+                           headers={'Authorization':
+                                    'Bearer {}'.format(self.token)}
                            )
+
     res_order = self.client.put('/api/v2/orders/1',
                                 data=json.dumps(self.order_status),
                                 content_type="application/json"
@@ -234,7 +278,8 @@ class DatabaseTest(unittest.TestCase):
                           data=json.dumps(self.meal_update),
                           content_type="application/json"
                           )
-    self.assertIn("You are trying to update a meal that doesnt exist", str(res.data))
+    self.assertIn(
+        "You are trying to update a meal that doesnt exist", str(res.data))
 
   def test_delete_meal(self):
     res = self.client.post('/api/v2/menu',
@@ -243,7 +288,7 @@ class DatabaseTest(unittest.TestCase):
                            )
     self.assertIn('meal pizza added', str(res.data))
     res = self.client.delete('/api/v2/meal/1',
-                          data=json.dumps(self.meal_update),
-                          content_type="application/json"
-                          )
+                             data=json.dumps(self.meal_update),
+                             content_type="application/json"
+                             )
     self.assertIn("meal deleted", str(res.data))
