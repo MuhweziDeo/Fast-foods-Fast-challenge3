@@ -12,3 +12,9 @@ class DBTestCase(unittest.TestCase):
     def test_create_user(self):
         query = self.db.register_user('dee', 'dee')
         self.assertIn('user created', str(query))
+
+    def test_find_user_by_username(self):
+        query = self.db.register_user('dee', 'dee')
+        self.assertIn('user created', str(query))
+        query = self.db.find_by_username('dee')
+        self.assertIn('dee', str(query))
