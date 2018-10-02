@@ -30,7 +30,7 @@ meal = api.model('Meal Option', {
     'price': fields.Integer(description="price", required=True, min_length=4),
 })
 
-mealupdate = api.model('Meal Option', {
+mealupdate = api.model('Meal Update', {
     'meal_status': fields.String(description="meal_name", required=True, min_length=4),
     'price': fields.Integer(description="price", required=True, min_length=4),
 })
