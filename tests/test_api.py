@@ -19,6 +19,11 @@ class DatabaseTest(unittest.TestCase):
         'password': 'dee',
         'confirm': 'dee'
     }
+    self.invalid_confirm_password = {
+        'username': 'dee',
+        'password': 'dee',
+        'confirm': 'deeooo'
+    }
     self.invalid_username = {
         'username': 'deodee',
         'password': 'dee',
@@ -76,6 +81,13 @@ class DatabaseTest(unittest.TestCase):
                                  data=json.dumps(self.invalid_username),
                                  content_type='application/json')
     self.assertIn('username deodee deosnt exist', str(res_login.data))
+
+  def test_invalid_confirm_password(self):
+    res = self.client.post('/api/v2/auth/signup',
+                           data=json.dumps(self.invalid_confirm_password),
+                           content_type='application/json'
+                           )
+    self.assertIn('passwords must match', str(res.data))
 
   def test_invalid_password_login(self):
     res = self.client.post('/api/v2/auth/signup',
