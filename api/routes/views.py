@@ -24,7 +24,11 @@ class Signup(Resource):
         data = api.payload
         username = data['username']
         password = data['password']
-        return db.register_user(username, password)
+        user = db.find_by_username(username)
+        if user is None:
+            return db.register_user(username, password)
+        else:
+            return {'message': 'username {} already taken'.format(username)}
 
 
 @api.route('/auth/login')
