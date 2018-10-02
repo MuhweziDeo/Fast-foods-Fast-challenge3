@@ -210,3 +210,14 @@ class DB():
             #     return {'message':'order with orderId {} doesnt exist'.format(orderId)}
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
+
+    def update_order_status(self, orderId, status):
+        try:
+            query = "UPDATE orders SET status='{}' WHERE orderid={}".format(
+                status, orderId)
+            self.cur.execute(query)
+            print(query)
+            return {'message': 'order status updated'}
+        except(Exception, psycopg2.DatabaseError) as e:
+            print(e)
+            return {'message': 'Sorry Unable To Complete Request'}
