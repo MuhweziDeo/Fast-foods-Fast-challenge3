@@ -21,6 +21,11 @@ meal = api.model('Meal Option', {
     'price': fields.Integer(description="price", required=True, min_length=4),
 })
 
+mealupdate = api.model('Meal Option', {
+    'meal_status': fields.String(description="meal_name", required=True, min_length=4),
+    'price': fields.Integer(description="price", required=True, min_length=4),
+})
+
 order = api.model('Order', {
     'location': fields.String,
     'quantity': fields.Integer,
@@ -83,13 +88,17 @@ class Menu(Resource):
 
 @api.route('/meal/<int:meal_id>')
 class Meal(Resource):
-    @api.expect(meal)
+    @api.expect(mealupdate)
     def put(self, meal_id):
         """update fastfood"""
-        data = api.payload
-        meal_name = data['meal_name']
-        price = data['price']
-        return db.update_meal(meal_id, price, meal_name)
+        meal = db.find_meal_by_id(meal_id)
+        if meal:
+            data = api.payload
+            meal_status = data['meal_status']
+            price = data['price']
+            return db.update_meal(meal_id, price, meal_status)
+        return {'message': 'You are trying to update a meal that doesnt exist',
+                "help": 'check and confirm meal with id {} exists'.format(meal_id)}
 
 
 @api.route('/users/orders')
@@ -105,6 +114,8 @@ class UserOrders(Resource):
         return db.create_order(location, quantity, user_id, meal)
 
 # orders
+
+
 @api.route('/users/orders')
 class UserOrders(Resource):
     def get(self):
