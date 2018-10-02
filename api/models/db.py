@@ -169,3 +169,18 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
             return {"message": "unable to place order"}
+
+    def get_order_history_for_a_user(self, user_id):
+        # get order history of a user
+        try:
+            query = "SELECT * FROM orders WHERE user_id='{}'".format(user_id)
+            self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
+            self.cur.execute(query)
+            user_orders = self.cur.fetchall()
+            if user_orders:
+                return {'orders for user with id {}'.format(user_id): user_orders}
+            else:
+                return {'message': 'user with id {} has placed any orders yet'.format(user_id)}
+        except(Exception, psycopg2.DatabaseError) as e:
+            print(e)
+            return {'message':'unable to retrive orders'}
