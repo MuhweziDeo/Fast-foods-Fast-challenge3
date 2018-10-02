@@ -112,3 +112,11 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
             return {'message': 'unable to complete request'}
+    def add_meal(self,meal_name,price):
+        try:
+            query="INSERT INTO fastfoods(meal_name,price) VALUES('{}',{})".format(meal_name,price)
+            self.cur.execute(query)
+            return {'message':"meal {} added".format(meal_name)}
+        except(Exception,psycopg2.DatabaseError) as e:
+            print(e)
+            return {'error':"Cant Add Meal at the moment"}
