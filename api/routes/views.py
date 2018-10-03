@@ -63,11 +63,9 @@ class AdminRegistration(Resource):
         user = db.find_by_username(username)
         if user is None:
             if confirm_password == password:
-                return db.register_admin(username, password)
-            else:
-                return {'message': 'passwords must match '}
-        else:
-            return {'message': 'username {} already taken'.format(username)}
+                return db.register_admin(username, password), 201
+            return {'message': 'passwords must match '}
+        return {'message': 'username {} already taken'.format(username)}
 
 
 @api.route('/auth/signup')
@@ -82,10 +80,8 @@ class Signup(Resource):
         if user is None:
             if confirm_password == password:
                 return db.register_user(username, password)
-            else:
-                return {'message': 'passwords must match '}
-        else:
-            return {'message': 'username {} already taken'.format(username)}
+            return {'message': 'passwords must match '}
+        return {'message': 'username {} already taken'.format(username)}
 
 
 @api.route('/auth/login')
@@ -101,11 +97,9 @@ class Login(Resource):
             if db.confirm_password_hash(attempted_password, pasword_hash):
                 token = create_access_token(identity=username)
                 return {'message': 'You have been Verified',
-                        'token': token}
-            else:
-                return {'message': 'password verification failed'}
-        else:
-            return {'message': 'username {} deosnt exist'.format(username)}
+                        'token': token}, 201
+            return {'message': 'password verification failed'}, 400
+        return {'message': 'username {} deosnt exist'.format(username)}, 404
 
 
 @api.route('/menu')
@@ -123,10 +117,9 @@ class Menu(Resource):
             price = data['price']
             meal = db.find_meal_by_name(meal_name)
             if meal:
-                return {'message': 'meal with name {} already exists'.format(meal_name)}
+                return {'message': 'meal with name {} already exists'.format(meal_name)}, 404
             return db.add_meal(meal_name, price)
-        else:
-            return {'message': 'You cant preform this action because you are unauthorised'}
+        return {'message': 'You cant preform this action because you are unauthorised'}, 401
 
     def get(self):
         return db.get_menu()
@@ -150,8 +143,8 @@ class Meal(Resource):
                 price = data['price']
                 return db.update_meal(meal_id, price, meal_status)
             return {'message': 'You are trying to update a meal that doesnt exist',
-                    "help": 'check and confirm meal with id {} exists'.format(meal_id)}
-        return {'message': 'You cant preform this action because you are unauthorised'}
+                    "help": 'check and confirm meal with id {} exists'.format(meal_id)}, 404
+        return {'message': 'You cant preform this action because you are unauthorised'}, 401
 
     @jwt_required
     @api.doc(params=jwt)
@@ -163,9 +156,9 @@ class Meal(Resource):
         if admin == True:
             fastfood = db.find_meal_by_id(meal_id)
             if fastfood is None:
-                return {'message': 'meal with meal_id "{}" you tried to delete doesnt exit'.format(meal_id)}
+                return {'message': 'meal with meal_id "{}" you tried to delete doesnt exit'.format(meal_id)}, 404
             return db.delete_meal(meal_id)
-        return {'message': 'You cant preform this action because you are unauthorised'}
+        return {'message': 'You cant preform this action because you are unauthorised'}, 401
 
 
 @api.route('/users/orders')
@@ -182,7 +175,7 @@ class UserOrders(Resource):
         current_user = get_jwt_identity()
         user = db.find_by_username(current_user)
         user_id = user[0]
-        return db.create_order(location, quantity, user_id, meal)
+        return db.create_order(location, quantity, user_id, meal), 201
 
     @jwt_required
     @api.doc(params=jwt)
@@ -191,7 +184,7 @@ class UserOrders(Resource):
         current_user = get_jwt_identity()
         user = db.find_by_username(current_user)
         user_id = user[0]
-        return db.get_order_history_for_a_user(user_id)
+        return db.get_order_history_for_a_user(user_id), 200
 
 
 @api.route('/orders')
@@ -203,8 +196,8 @@ class Orders(Resource):
         user = db.find_by_username(current_user)
         admin = user[3]
         if admin == True:
-            return db.get_all_orders()
-        return {'message': 'You cant preform this action because you are unauthorised'}
+            return db.get_all_orders(), 200
+        return {'message': 'You cant preform this action because you are unauthorised'}, 401
 
 
 @api.route('/orders/<int:orderId>')
@@ -218,9 +211,9 @@ class Order(Resource):
         if admin == True:
             order = db.find_order_by_id(orderId)
             if order:
-                return db.get_order(orderId)
-            return {'message': 'order with Id {} doesnt exist'.format(orderId)}
-        return {'message': 'You cant preform this action because you are unauthorised'}
+                return db.get_order(orderId), 200
+            return {'message': 'order with Id {} doesnt exist'.format(orderId)}, 404
+        return {'message': 'You cant preform this action because you are unauthorised'}, 401
 
     @api.expect(orderstatus)
     @jwt_required
@@ -235,10 +228,9 @@ class Order(Resource):
             if order:
                 data = api.payload
                 status = data['status']
-                return db.update_order_status(orderId, status)
-            else:
-                return {'message': 'order {} doesnt exist'.format(orderId)}
-        return {'message': 'You cant preform this action because you are unauthorised'}
+                return db.update_order_status(orderId, status), 201
+            return {'message': 'order {} doesnt exist'.format(orderId)}
+        return {'message': 'You cant preform this action because you are unauthorised'}, 401
 
 
 @app.errorhandler(404)
