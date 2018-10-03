@@ -330,13 +330,13 @@ class DatabaseTest(unittest.TestCase):
                                  data=json.dumps(self.admin),
                                  content_type='application/json')
     login_data = res_login.json
-    self.token = login_data['token']
+    self.token_admin = login_data['token']
 
     res = self.client.post('/api/v2/menu',
                            data=json.dumps(self.meal),
                            content_type="application/json",
                            headers={'Authorization':
-                                    'Bearer {}'.format(self.token)})
+                                    'Bearer {}'.format(self.token_admin)})
     res = self.client.post('/api/v2/auth/signup',
                            data=json.dumps(self.user),
                            content_type='application/json'
@@ -360,7 +360,9 @@ class DatabaseTest(unittest.TestCase):
 
     res_order = self.client.put('/api/v2/orders/1',
                                 data=json.dumps(self.order_status),
-                                content_type="application/json"
+                                content_type="application/json",
+                                headers={'Authorization':
+                                         'Bearer {}'.format(self.token_admin)}
                                 )
     self.assertIn("order status updated", str(res_order.data))
 
