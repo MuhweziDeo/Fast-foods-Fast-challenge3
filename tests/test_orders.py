@@ -13,9 +13,9 @@ class DatabaseTest(unittest.TestCase):
     self.db.create_db_tables()
     self.client = self.app.test_client()
     self.user = {
-        'username': 'dee',
-        'password': 'dee',
-        'confirm': 'dee'
+        'username': 'deedeo',
+        'password': 'deedeo',
+        'confirm': 'deedeo'
     }
     self.admin_reg = {
         'username': 'admin',
@@ -26,18 +26,23 @@ class DatabaseTest(unittest.TestCase):
         'username': 'admin',
         'password': 'admin'
     }
+    self.user = {
+        'username': 'deedeo',
+        'password': 'deedeo',
+        'confirm': 'deedeo'
+    }
     self.invalid_confirm_password = {
-        'username': 'dee',
-        'password': 'dee',
+        'username': 'deedeo',
+        'password': 'deedeo',
         'confirm': 'deeooo'
     }
     self.invalid_username = {
         'username': 'deodee',
-        'password': 'dee',
-        'confirm': 'dee'
+        'password': 'deedee',
+        'confirm': 'deedee'
     }
     self.invalid_password = {
-        'username': 'dee',
+        'username': 'deedddd',
         'password': 'deodee'
     }
     self.meal = {
@@ -49,7 +54,7 @@ class DatabaseTest(unittest.TestCase):
         "price": 800
     }
     self.order = {
-        "location": "kla",
+        "location": "bunga",
         "quantity": 4,
         "meal": "pizza"
     }
