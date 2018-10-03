@@ -253,13 +253,13 @@ class DatabaseTest(unittest.TestCase):
                                  data=json.dumps(self.admin),
                                  content_type='application/json')
     login_data = res_login.json
-    self.token = login_data['token']
+    self.token_admin = login_data['token']
 
     res = self.client.post('/api/v2/menu',
                            data=json.dumps(self.meal),
                            content_type="application/json",
                            headers={'Authorization':
-                                    'Bearer {}'.format(self.token)})
+                                    'Bearer {}'.format(self.token_admin)})
 
     res = self.client.post('/api/v2/auth/signup',
                            data=json.dumps(self.user),
@@ -277,7 +277,10 @@ class DatabaseTest(unittest.TestCase):
                            headers={'Authorization':
                                     'Bearer {}'.format(self.token)}
                            )
-    res = self.client.get('/api/v2/orders')
+
+    res = self.client.get('/api/v2/orders',
+                          headers={'Authorization':
+                                   'Bearer {}'.format(self.token_admin)})
 
     self.assertIn("All Orders", str(res.data))
 
@@ -407,7 +410,8 @@ class DatabaseTest(unittest.TestCase):
                           headers={'Authorization':
                                    'Bearer {}'.format(self.token)}
                           )
-    self.assertIn("You are trying to update a meal that doesnt exist", str(res.data))
+    self.assertIn(
+        "You are trying to update a meal that doesnt exist", str(res.data))
 
   def test_delete_meal(self):
     res = self.client.post('/api/v2/auth/admin',
@@ -427,6 +431,8 @@ class DatabaseTest(unittest.TestCase):
                                     'Bearer {}'.format(self.token)})
     res = self.client.delete('/api/v2/meal/1',
                              data=json.dumps(self.meal_update),
-                             content_type="application/json"
+                             content_type="application/json",
+                             headers={'Authorization':
+                                      'Bearer {}'.format(self.token)}
                              )
     self.assertIn("meal deleted", str(res.data))
