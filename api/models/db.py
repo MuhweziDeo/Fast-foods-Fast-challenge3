@@ -8,15 +8,19 @@ from datetime import datetime
 class DB():
     def __init__(self, host, user, dbname, password):
         if os.getenv('APP_SETTINGS') != "testing":
-            databasename = "apimain"
+            self.databasename = "apimain"
         else:
-            databasename = "fastfoods_test"
+            self.databasename = "fastfoods_test"
         try:
+            self.host = host
+            self.user = user
+            self.dbname = dbname
+            self.password = password
             self.connection = psycopg2.connect(
-                user='postgres', password='sudo', dbname=''.format(databasename), host='localhost')
+                user=self.user, password=self.password, dbname=self.databasename, host=self.host)
             self.cur = self.connection.cursor()
             self.connection.autocommit = True
-            print('connection succeful {}'.format(databasename))
+            print(self.databasename)
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
 
