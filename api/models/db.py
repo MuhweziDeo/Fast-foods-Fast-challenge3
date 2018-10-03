@@ -8,15 +8,15 @@ from datetime import datetime
 class DB():
     def __init__(self, host, user, dbname, password):
         if os.getenv('APP_SETTINGS') != "testing":
-            dbname = "apimain"
+            databasename = "apimain"
         else:
-            dbname = "fastfoods_test"
+            databasename = "fastfoods_test"
         try:
             self.connection = psycopg2.connect(
-                user='postgres', password='sudo', dbname='', host='localhost')
+                user='postgres', password='sudo', dbname=''.format(databasename), host='localhost')
             self.cur = self.connection.cursor()
             self.connection.autocommit = True
-            print('connection succeful {}'.format(dbname))
+            print('connection succeful {}'.format(databasename))
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
 
@@ -218,6 +218,7 @@ class DB():
     def get_order(self, orderId):
         try:
             query = "SELECT * FROM orders WHERE orderid={}".format(orderId)
+            self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(query)
             order = self.cur.fetchone()
             # if order:
