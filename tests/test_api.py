@@ -293,13 +293,13 @@ class DatabaseTest(unittest.TestCase):
                                  data=json.dumps(self.admin),
                                  content_type='application/json')
     login_data = res_login.json
-    self.token = login_data['token']
+    self.token_admin = login_data['token']
 
     res = self.client.post('/api/v2/menu',
                            data=json.dumps(self.meal),
                            content_type="application/json",
                            headers={'Authorization':
-                                    'Bearer {}'.format(self.token)})
+                                    'Bearer {}'.format(self.token_admin)})
 
     res = self.client.post('/api/v2/auth/signup',
                            data=json.dumps(self.user),
@@ -317,7 +317,8 @@ class DatabaseTest(unittest.TestCase):
                            headers={'Authorization':
                                     'Bearer {}'.format(self.token)}
                            )
-    res_order = self.client.get('/api/v2/orders/1')
+    res_order = self.client.get('/api/v2/orders/1', headers={'Authorization':
+                                                             'Bearer {}'.format(self.token_admin)})
 
     self.assertIn("pizza", str(res_order.data))
 
