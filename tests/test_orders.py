@@ -62,7 +62,7 @@ class DatabaseTest(unittest.TestCase):
         "status": "Accepted"
     }
 
-  def test_create_order(self):
+  def create_menu(self):
     res = self.client.post('/api/v2/auth/admin',
                            data=json.dumps(self.admin_reg),
                            content_type='application/json'
@@ -78,6 +78,9 @@ class DatabaseTest(unittest.TestCase):
                            content_type="application/json",
                            headers={'Authorization':
                                     'Bearer {}'.format(self.token)})
+
+  def test_create_order(self):
+    self.create_menu()
 
     res = self.client.post('/api/v2/auth/signup',
                            data=json.dumps(self.user),
@@ -98,21 +101,7 @@ class DatabaseTest(unittest.TestCase):
     self.assertIn("order placed successfully", str(res.data))
 
   def test_get_orders_for_a_user(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
-    res_login = self.client.post('/api/v2/auth/login',
-                                 data=json.dumps(self.admin),
-                                 content_type='application/json')
-    login_data = res_login.json
-    self.token = login_data['token']
-
-    res = self.client.post('/api/v2/menu',
-                           data=json.dumps(self.meal),
-                           content_type="application/json",
-                           headers={'Authorization':
-                                    'Bearer {}'.format(self.token)})
+    self.create_menu()
 
     res = self.client.post('/api/v2/auth/signup',
                            data=json.dumps(self.user),
@@ -137,21 +126,7 @@ class DatabaseTest(unittest.TestCase):
     self.assertIn('orders for user with id 2', str(res.data))
 
   def test_get_all_orders(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
-    res_login = self.client.post('/api/v2/auth/login',
-                                 data=json.dumps(self.admin),
-                                 content_type='application/json')
-    login_data = res_login.json
-    self.token_admin = login_data['token']
-
-    res = self.client.post('/api/v2/menu',
-                           data=json.dumps(self.meal),
-                           content_type="application/json",
-                           headers={'Authorization':
-                                    'Bearer {}'.format(self.token_admin)})
+    self.create_menu()
 
     res = self.client.post('/api/v2/auth/signup',
                            data=json.dumps(self.user),
@@ -177,21 +152,7 @@ class DatabaseTest(unittest.TestCase):
     self.assertIn("All Orders", str(res.data))
 
   def test_get_order(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
-    res_login = self.client.post('/api/v2/auth/login',
-                                 data=json.dumps(self.admin),
-                                 content_type='application/json')
-    login_data = res_login.json
-    self.token_admin = login_data['token']
-
-    res = self.client.post('/api/v2/menu',
-                           data=json.dumps(self.meal),
-                           content_type="application/json",
-                           headers={'Authorization':
-                                    'Bearer {}'.format(self.token_admin)})
+    self.create_menu()
 
     res = self.client.post('/api/v2/auth/signup',
                            data=json.dumps(self.user),
@@ -215,21 +176,7 @@ class DatabaseTest(unittest.TestCase):
     self.assertIn("pizza", str(res_order.data))
 
   def test_update_order_status(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
-    res_login = self.client.post('/api/v2/auth/login',
-                                 data=json.dumps(self.admin),
-                                 content_type='application/json')
-    login_data = res_login.json
-    self.token_admin = login_data['token']
-
-    res = self.client.post('/api/v2/menu',
-                           data=json.dumps(self.meal),
-                           content_type="application/json",
-                           headers={'Authorization':
-                                    'Bearer {}'.format(self.token_admin)})
+    self.create_menu()
     res = self.client.post('/api/v2/auth/signup',
                            data=json.dumps(self.user),
                            content_type='application/json'
