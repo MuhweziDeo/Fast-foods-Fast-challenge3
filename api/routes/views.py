@@ -36,13 +36,13 @@ mealupdate = api.model('Meal Update', {
 })
 
 order = api.model('Order', {
-    'location': fields.String,
-    'quantity': fields.Integer,
-    'meal': fields.String
+    'location': fields.String(description="location", required=True, min_length=4),
+    'quantity': fields.Integer(description="quantity", required=True, min_length=4),
+    'meal': fields.String(description="meal_name", required=True, min_length=4)
 })
 
 orderstatus = api.model('order-status', {
-    "status": fields.String
+    "status": fields.String(description="status", required=True, min_length=4)
 })
 
 
@@ -54,7 +54,7 @@ jwt = {'Authorization': {'Authorization Bearer': 'Bearer',
 
 @api.route('/auth/admin')
 class AdminRegistration(Resource):
-    @api.expect(user)
+    @api.expect(user, validate=True)
     def post(self):
         data = api.payload
         username = data['username']
@@ -70,7 +70,7 @@ class AdminRegistration(Resource):
 
 @api.route('/auth/signup')
 class Signup(Resource):
-    @api.expect(user)
+    @api.expect(user, validate=True)
     def post(self):
         data = api.payload
         username = data['username']
@@ -106,7 +106,7 @@ class Login(Resource):
 class Menu(Resource):
     @jwt_required
     @api.doc(params=jwt)
-    @api.expect(meal)
+    @api.expect(meal, validate=True)
     def post(self):
         current_user = get_jwt_identity()
         user = db.find_by_username(current_user)
@@ -129,7 +129,7 @@ class Menu(Resource):
 class Meal(Resource):
     @jwt_required
     @api.doc(params=jwt)
-    @api.expect(mealupdate)
+    @api.expect(mealupdate, validate=True)
     def put(self, meal_id):
         """update fastfood"""
         current_user = get_jwt_identity()
@@ -165,7 +165,7 @@ class Meal(Resource):
 class UserOrders(Resource):
     @jwt_required
     @api.doc(params=jwt)
-    @api.expect(order)
+    @api.expect(order, validate=True)
     def post(self):
         """ Post An Order"""
         data = api.payload
@@ -215,7 +215,7 @@ class Order(Resource):
             return {'message': 'order with Id {} doesnt exist'.format(orderId)}, 404
         return {'message': 'You cant preform this action because you are unauthorised'}, 401
 
-    @api.expect(orderstatus)
+    @api.expect(orderstatus, validate=True)
     @jwt_required
     @api.doc(params=jwt)
     def put(self, orderId):
