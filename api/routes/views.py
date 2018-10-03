@@ -196,8 +196,15 @@ class UserOrders(Resource):
 
 @api.route('/orders')
 class Orders(Resource):
+    @jwt_required
+    @api.doc(params=jwt)
     def get(self):
-        return db.get_all_orders()
+        current_user = get_jwt_identity()
+        user = db.find_by_username(current_user)
+        admin = user[3]
+        if admin == True:
+            return db.get_all_orders()
+        return {'message': 'You cant preform this action because you are unauthorised'}
 
 
 @api.route('/orders/<int:orderId>')
