@@ -6,21 +6,21 @@ from datetime import datetime
 
 
 class DB():
-    def __init__(self, host, user, dbname, password):
-        if os.getenv('APP_SETTINGS') != "testing":
-            self.databasename = "apimain"
-        else:
-            self.databasename = "fastfoods_test"
+    def __init__(self):
         try:
-            self.host = host
-            self.user = user
-            self.dbname = dbname
-            self.password = password
-            self.connection = psycopg2.connect(
-                user=self.user, password=self.password, dbname=self.databasename, host=self.host)
+            if os.getenv('APP_SETTINGS') == "testing":
+                self.connection = psycopg2.connect(
+                    str('postgresql://postgres:sudo@127.0.0.1:5432/fastfoods_test'))
+            elif os.getenv('APP_SETTINGS') == "development":
+                self.connection = psycopg2.connect(
+                    str('postgresql://postgres:sudo@127.0.0.1:5432/apimain'))
+            else:
+                self.connection = psycopg2.connect(
+                    str(os.getenv('DATABASE_URL')))
+
             self.cur = self.connection.cursor()
             self.connection.autocommit = True
-            print(self.databasename)
+            print('connection successfully established')
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
 

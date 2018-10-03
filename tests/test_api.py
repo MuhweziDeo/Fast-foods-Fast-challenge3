@@ -9,8 +9,7 @@ class DatabaseTest(unittest.TestCase):
 
   def setUp(self):
     self.app = app
-    self.db = DB(host='localhost', user='postgres',
-                 dbname='', password='sudo')
+    self.db = DB()
     self.db.create_db_tables()
     self.client = self.app.test_client()
     self.user = {

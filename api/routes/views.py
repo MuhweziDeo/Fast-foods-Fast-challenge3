@@ -3,14 +3,9 @@ from flask_restplus import Api, Resource, fields
 from flask_jwt_extended import jwt_required, JWTManager, create_access_token, get_jwt_identity
 from api.app import app
 from api.models.db import DB
-import os
 
-if os.getenv('APP_SETTINGS') == "production":
-    db = DB(user=os.getenv('username'), password=os.getenv('password'),
-            host=os.getenv('host'), dbname=os.getenv('dbname'))
-else:
-    db = DB(user='postgres', password='sudo',
-            dbname='', host='localhost')
+
+db = DB()
 
 api = Api(app, prefix='/api/v2', version='2.0', title='Fast-Foods-Api')
 jwt = JWTManager(app)
