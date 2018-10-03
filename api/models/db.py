@@ -102,12 +102,12 @@ class DB():
         try:
             password = self.hash_password(password)
             # new_user=User(username,password)
-            create_user = "INSERT INTO users(username,password,admin) VALUES ('{}','{}',"True")".format(
+            create_user = "INSERT INTO users(username,password,admin) VALUES ('{}','{}',True)".format(
                           username, password)
             print(create_user)
             self.cur.execute(create_user)
             # print(new_user)
-            return {'message': 'admin user  created'}
+            return {'message': 'admin user created'}
         except(Exception, psycopg2.DatabaseError) as error:
             print(error)
             # return None
