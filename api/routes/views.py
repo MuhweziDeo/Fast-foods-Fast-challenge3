@@ -1,3 +1,4 @@
+from flask import jsonify
 from flask_restplus import Api, Resource, fields
 from flask_jwt_extended import jwt_required, JWTManager, create_access_token, get_jwt_identity
 from api.app import app
@@ -243,3 +244,13 @@ class Order(Resource):
             else:
                 return {'message': 'order {} doesnt exist'.format(orderId)}
         return {'message': 'You cant preform this action because you are unauthorised'}
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return jsonify({'message': "Hey The URL you Tried to Acess Doesnt Exist on the server"}), 404
+
+
+@api.errorhandler
+def error_handler(error):
+    return {'message': str(error)}, getattr(error, 'code', 500)
