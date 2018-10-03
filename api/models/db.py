@@ -7,6 +7,7 @@ from datetime import datetime
 
 class DB():
     def __init__(self):
+        '''INIT DB CLASS'''
         try:
             if os.getenv('APP_SETTINGS') == "testing":
                 self.connection = psycopg2.connect(
@@ -25,6 +26,7 @@ class DB():
             print(e)
 
     def create_db_tables(self):
+        '''CREATE DATABASE TABLES'''
         queries = (
 
             """
@@ -80,73 +82,54 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as error:
             print(error, 'Failed')
 
-           # users
     def hash_password(self, password):
+        '''HASH PASSWORDS'''
         return generate_password_hash(password)
 
     def confirm_password_hash(self, password, pasword_hash):
+        '''CHECK HASHED PASSWORD'''
         return check_password_hash(pasword_hash, password)
 
     def register_user(self, username, password):
-        try:
-            password = self.hash_password(password)
-            # new_user=User(username,password)
-            create_user = "INSERT INTO users(username,password) VALUES ('{}','{}')".format(
-                          username, password)
-            print(create_user)
-            self.cur.execute(create_user)
-            # print(new_user)
-            return {'message': 'user created'}
-        except(Exception, psycopg2.DatabaseError) as error:
-            print(error)
-            # return None
-            return {'message': 'Unable to create account'}
+        '''ADD USER '''
+        '''by default a normal user has false in admin column'''
+        password = self.hash_password(password)
+        create_user = "INSERT INTO users(username,password) VALUES ('{}','{}')".format(
+            username, password)
+        self.cur.execute(create_user)
+        return {'message': 'user created'}
 
     def register_admin(self, username, password):
-        try:
-            password = self.hash_password(password)
-            # new_user=User(username,password)
-            create_user = "INSERT INTO users(username,password,admin) VALUES ('{}','{}',True)".format(
-                          username, password)
-            print(create_user)
-            self.cur.execute(create_user)
-            # print(new_user)
-            return {'message': 'admin user created'}
-        except(Exception, psycopg2.DatabaseError) as error:
-            print(error)
-            # return None
-            return {'message': 'Unable to create account'}
+        '''ADD ADMIN USER'''
+        password = self.hash_password(password)
+        create_user = "INSERT INTO users(username,password,admin) VALUES ('{}','{}',True)".format(
+            username, password)
+        self.cur.execute(create_user)
+        return {'message': 'admin user created'}
 
     def find_by_username(self, username):
-        try:
-            query = "SELECT * from users where username='{}'".format(username)
-            self.cur = self.connection.cursor()
-            self.cur.execute(query)
-            user = self.cur.fetchone()
-            if user:
-                user_id = user[0]
-                username = user[1]
-                password = user[2]
-                admin = user[3]
-                return user_id, username, password, admin
-            else:
-                return None
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
-            return {'message': 'unable to complete request'}
+        '''find user by thier username'''
+        query = "SELECT * from users where username='{}'".format(username)
+        self.cur = self.connection.cursor()
+        self.cur.execute(query)
+        user = self.cur.fetchone()
+        if user:
+            user_id = user[0]
+            username = user[1]
+            password = user[2]
+            admin = user[3]
+            return user_id, username, password, admin
+        return None
 
     def add_meal(self, meal_name, price):
-        try:
-            query = "INSERT INTO fastfoods(meal_name,price) VALUES('{}',{})".format(
-                meal_name, price)
-            self.cur.execute(query)
-            return {'message': "meal {} added".format(meal_name)}
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
-            return {'error': "Cant Add Meal at the moment"}
+        '''add meal option to menu'''
+        query = "INSERT INTO fastfoods(meal_name,price) VALUES('{}',{})".format(
+            meal_name, price)
+        self.cur.execute(query)
+        return {'message': "meal {} added".format(meal_name)}
 
     def find_meal_by_name(self, meal_name):
-        # find meal by name
+        '''find a meal by its name'''
         try:
             query = "SELECT meal_name FROM fastfoods WHERE meal_name='{}'".format(
                 meal_name)
@@ -163,135 +146,96 @@ class DB():
             return {'error': str(error)}
 
     def get_menu(self):
-        # get all meals/menu
-        try:
-            query = "SELECT * FROM fastfoods"
-            self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
-            self.cur.execute(query)
-            fastfoods = self.cur.fetchall()
-            if fastfoods:
-                return {'menu': fastfoods}
-            else:
-                return {'message': 'No Meals available yet on the Menu'}
-        except(Exception, psycopg2.DatabaseError) as error:
-            print(error, 'Failed')
-            return {'error': str(error)}
-    # orders
+        '''get meals on menu'''
+        query = "SELECT * FROM fastfoods"
+        self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        self.cur.execute(query)
+        fastfoods = self.cur.fetchall()
+        if fastfoods:
+            return {'menu': fastfoods}
+        return {'message': 'No Meals available yet on the Menu'}
+
+    '''ORDER OPERATIONS'''
 
     def create_order(self, location, quantity, user_id, meal):
-        # create an order
+        '''create an order'''
         try:
             date = str(datetime.utcnow())
             query = "INSERT INTO orders(location,quantity,meal_name,user_id,order_date) VALUES('{}',{},'{}',{},'{}')".format(
-                location, quantity, meal, user_id, date)
+                    location, quantity, meal, user_id, date)
             self.cur.execute(query)
             return {'meaasge': 'order placed successfully'}
         except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
-            return {"message": "unable to place order"}
+            '''since meal references meal name in fastfoods
+            when a user tries to order a meal not in the table
+            it database operation fials because it violates database contraints '''
+            return {'message': 'Its Possible meal {} is not on the menu '.format(meal)}
 
     def get_order_history_for_a_user(self, user_id):
-        # get order history of a user
-        try:
-            query = "SELECT * FROM orders WHERE user_id='{}'".format(user_id)
-            self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
-            self.cur.execute(query)
-            user_orders = self.cur.fetchall()
-            if user_orders:
-                return {'orders for user with id {}'.format(user_id): user_orders}
-            else:
-                return {'message': 'user with id {} has placed any orders yet'.format(user_id)}
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
-            return {'message': 'unable to retrive orders'}
+        '''Get order history of a specific user'''
+        query = "SELECT * FROM orders WHERE user_id='{}'".format(user_id)
+        self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        self.cur.execute(query)
+        user_orders = self.cur.fetchall()
+        if user_orders:
+            return {'orders for user with id {}'.format(user_id): user_orders}
+        return {'message': 'user with id {} has placed any orders yet'.format(user_id)}
 
     def get_all_orders(self):
-        try:
-            query = "SELECT * FROM orders"
-            self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
-            self.cur.execute(query)
-            orders = self.cur.fetchall()
-            if orders:
-                return {"All Orders": orders}
-            else:
-                return {'message': 'No orders have been placed yet'}
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
-            return {'message': 'unable to retrive orders'}
+        '''get all orders'''
+        query = "SELECT * FROM orders"
+        self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        self.cur.execute(query)
+        orders = self.cur.fetchall()
+        if orders:
+            return {"All Orders": orders}
+        return {'message': 'No orders have been placed yet'}
 
     def get_order(self, orderId):
-        try:
-            query = "SELECT * FROM orders WHERE orderid={}".format(orderId)
-            self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
-            self.cur.execute(query)
-            order = self.cur.fetchone()
-            # if order:
-            return {'order_details': order}
-            # else:
-            #     return {'message':'order with orderId {} doesnt exist'.format(orderId)}
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
+        '''get order by its ID'''
+        query = "SELECT * FROM orders WHERE orderid={}".format(orderId)
+        self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        self.cur.execute(query)
+        order = self.cur.fetchone()
+        return {'order_details': order}
 
     def find_order_by_id(self, orderid):
-          # find order by id
-        try:
-            query = "SELECT * FROM orders WHERE orderid='{}'".format(orderid)
-            self.cur.execute(query)
-            order = self.cur.fetchone()
-            if order:
-                return {'order_details': order}
-            else:
-                return None
-        except(Exception, psycopg2.DatabaseError) as error:
-            print(error, 'Failed')
-            return {'error': str(error)}
+        '''find an order by its ID'''
+        query = "SELECT * FROM orders WHERE orderid='{}'".format(orderid)
+        self.cur.execute(query)
+        order = self.cur.fetchone()
+        if order:
+            return {'order_details': order}
+        return None
 
     def update_order_status(self, orderId, status):
-        try:
-            query = "UPDATE orders SET status='{}' WHERE orderid={}".format(
+        '''update the order status of an order'''
+        query = "UPDATE orders SET status='{}' WHERE orderid={}".format(
                 status, orderId)
-            self.cur.execute(query)
-            print(query)
-            return {'message': 'order status updated'}
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
-            return {'message': 'Sorry Unable To Complete Request'}
+        self.cur.execute(query)
+        return {'message': 'order status updated'}
 
     def find_meal_by_id(self, meal_id):
-        # find meal by id
-        try:
-            query = "SELECT meal_name FROM fastfoods WHERE meal_id='{}'".format(
+        '''find a meal by its ID'''
+        query = "SELECT meal_name FROM fastfoods WHERE meal_id='{}'".format(
                 meal_id)
-            self.cur = self.connection.cursor()
-            self.cur.execute(query)
-            fastfood = self.cur.fetchone()
-            if fastfood:
-                meal_id = fastfood[0]
-                return meal_id
-            else:
-                return None
-        except(Exception, psycopg2.DatabaseError) as error:
-            print(error, 'Failed')
-            return {'error': str(error)}
+        self.cur = self.connection.cursor()
+        self.cur.execute(query)
+        fastfood = self.cur.fetchone()
+        if fastfood:
+            meal_id = fastfood[0]
+            return meal_id
+        return None
 
     def update_meal(self, meal_id, price, meal_status):
-        # update meal
-        try:
-            query = "UPDATE fastfoods SET meal_status='{}',price={} WHERE meal_id={}".format(
+        '''update meal_status and price of a meal'''
+        query = "UPDATE fastfoods SET meal_status='{}',price={} WHERE meal_id={}".format(
                 meal_status, price, meal_id)
-            self.cur.execute(query)
-            print(query)
-            return {'message': 'meal updated'}
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
-            return {'Message': 'Unable to complete Request'}
+        self.cur.execute(query)
+        return {'message': 'meal updated'}
 
     def delete_meal(self, meal_id):
-        # delete fastfood
-        try:
-            query = 'DELETE From fastfoods WHERE meal_id={}'.format(meal_id)
-            self.cur.execute(query)
-            return {'message': 'meal deleted'}
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
-            return {'message': "Something Went Wrong Unable to Complete request"}
+        '''delete a meal from the menu by ID'''
+        query = 'DELETE From fastfoods WHERE meal_id={}'.format(meal_id)
+        self.cur.execute(query)
+        return {'message': 'meal deleted'}
