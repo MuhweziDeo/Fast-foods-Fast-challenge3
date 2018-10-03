@@ -96,7 +96,22 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as error:
             print(error)
             # return None
-            return {'message': 'Please choose a another name because username {} already exits'.format(username)}
+            return {'message': 'Unable to create account'}
+
+    def register_admin(self, username, password):
+        try:
+            password = self.hash_password(password)
+            # new_user=User(username,password)
+            create_user = "INSERT INTO users(username,password,admin) VALUES ('{}','{}',"True")".format(
+                          username, password)
+            print(create_user)
+            self.cur.execute(create_user)
+            # print(new_user)
+            return {'message': 'admin user  created'}
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            # return None
+            return {'message': 'Unable to create account'}
 
     def find_by_username(self, username):
         try:
