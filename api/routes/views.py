@@ -4,14 +4,13 @@ from api.app import app
 from api.models.db import DB
 
 db = DB(user='postgres', password='sudo',
-        dbname=' ', host='localhost')
+        dbname='', host='localhost')
 
 api = Api(app, prefix='/api/v2', version='2.0', title='Fast-Foods-Api')
 jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = 'thisissecretkhahxcahiahiac'
 
 db.create_db_tables()
-# db.drop_all_tables('orders','users','fastfoods')
 
 user = api.model('User', {
     'username': fields.String(description="username", required=True, min_length=4),
@@ -223,12 +222,19 @@ class Order(Resource):
         return {'message': 'You cant preform this action because you are unauthorised'}
 
     @api.expect(orderstatus)
+    @jwt_required
+    @api.doc(params=jwt)
     def put(self, orderId):
         """ Update order status"""
-        order = db.find_order_by_id(orderId)
-        if order:
-            data = api.payload
-            status = data['status']
-            return db.update_order_status(orderId, status)
-        else:
-            return {'message': 'order {} doesnt exist'.format(orderId)}
+        current_user = get_jwt_identity()
+        user = db.find_by_username(current_user)
+        admin = user[3]
+        if admin == True:
+            order = db.find_order_by_id(orderId)
+            if order:
+                data = api.payload
+                status = data['status']
+                return db.update_order_status(orderId, status)
+            else:
+                return {'message': 'order {} doesnt exist'.format(orderId)}
+        return {'message': 'You cant preform this action because you are unauthorised'}
