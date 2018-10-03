@@ -8,15 +8,19 @@ from datetime import datetime
 class DB():
     def __init__(self, host, user, dbname, password):
         if os.getenv('APP_SETTINGS') != "testing":
-            dbname = "apimain"
+            self.databasename = "apimain"
         else:
-            dbname = "fastfoods_test"
+            self.databasename = "fastfoods_test"
         try:
+            self.host = host
+            self.user = user
+            self.dbname = dbname
+            self.password = password
             self.connection = psycopg2.connect(
-                user='postgres', password='sudo', dbname='', host='localhost')
+                user=self.user, password=self.password, dbname=self.databasename, host=self.host)
             self.cur = self.connection.cursor()
             self.connection.autocommit = True
-            print('connection succeful {}'.format(dbname))
+            print(self.databasename)
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
 
@@ -96,7 +100,22 @@ class DB():
         except(Exception, psycopg2.DatabaseError) as error:
             print(error)
             # return None
-            return {'message': 'Please choose a another name because username {} already exits'.format(username)}
+            return {'message': 'Unable to create account'}
+
+    def register_admin(self, username, password):
+        try:
+            password = self.hash_password(password)
+            # new_user=User(username,password)
+            create_user = "INSERT INTO users(username,password,admin) VALUES ('{}','{}',True)".format(
+                          username, password)
+            print(create_user)
+            self.cur.execute(create_user)
+            # print(new_user)
+            return {'message': 'admin user created'}
+        except(Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            # return None
+            return {'message': 'Unable to create account'}
 
     def find_by_username(self, username):
         try:
@@ -203,6 +222,7 @@ class DB():
     def get_order(self, orderId):
         try:
             query = "SELECT * FROM orders WHERE orderid={}".format(orderId)
+            self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(query)
             order = self.cur.fetchone()
             # if order:
