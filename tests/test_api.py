@@ -229,7 +229,6 @@ class DatabaseTest(unittest.TestCase):
     res_login = self.client.post('/api/v2/auth/login',
                                  data=json.dumps(self.user),
                                  content_type='application/json')
-    self.assertIn('You have been Verified', str(res_login.data))
     login_data = res_login.json
     self.token = login_data['token']
 
@@ -380,7 +379,9 @@ class DatabaseTest(unittest.TestCase):
                                     'Bearer {}'.format(self.token)})
     res = self.client.put('/api/v2/meal/1',
                           data=json.dumps(self.meal_update),
-                          content_type="application/json"
+                          content_type="application/json",
+                          headers={'Authorization':
+                                   'Bearer {}'.format(self.token)}
                           )
     self.assertIn("meal updated", str(res.data))
 
@@ -400,12 +401,13 @@ class DatabaseTest(unittest.TestCase):
                            content_type="application/json",
                            headers={'Authorization':
                                     'Bearer {}'.format(self.token)})
-    res = self.client.put('/api/v2/meal/33',
+    res = self.client.put('/api/v2/meal/111',
                           data=json.dumps(self.meal_update),
-                          content_type="application/json"
+                          content_type="application/json",
+                          headers={'Authorization':
+                                   'Bearer {}'.format(self.token)}
                           )
-    self.assertIn(
-        "You are trying to update a meal that doesnt exist", str(res.data))
+    self.assertIn("You are trying to update a meal that doesnt exist", str(res.data))
 
   def test_delete_meal(self):
     res = self.client.post('/api/v2/auth/admin',
