@@ -6,7 +6,6 @@ class DBTestCase(unittest.TestCase):
     def setUp(self):
         self.db = DB(host='localhost', user='postgres',
                      dbname='', password='sudo')
-        self.db.drop_all_tables('orders', 'users', 'fastfoods')
         self.db.create_db_tables()
 
     def test_create_user(self):
@@ -71,3 +70,7 @@ class DBTestCase(unittest.TestCase):
         query = self.db.add_meal('pizza', 4000)
         query = self.db.delete_meal(1)
         self.assertIn("meal deleted", str(query))
+
+    def tearDown(self):
+        print('dropping')
+        self.db.drop_all_tables('orders', 'users', 'fastfoods')

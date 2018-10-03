@@ -11,7 +11,6 @@ class DatabaseTest(unittest.TestCase):
     self.app = app
     self.db = DB(host='localhost', user='postgres',
                  dbname='', password='sudo')
-    self.db.drop_all_tables('orders', 'users', 'fastfoods')
     self.db.create_db_tables()
     self.client = self.app.test_client()
     self.user = {
@@ -436,4 +435,9 @@ class DatabaseTest(unittest.TestCase):
                              headers={'Authorization':
                                       'Bearer {}'.format(self.token)}
                              )
+
     self.assertIn("meal deleted", str(res.data))
+
+  def tearDown(self):
+    print('dropping')
+    self.db.drop_all_tables('orders', 'users', 'fastfoods')
