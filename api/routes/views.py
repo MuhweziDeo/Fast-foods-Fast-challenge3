@@ -5,12 +5,12 @@ from api.app import app
 from api.models.db import DB
 import os
 
-if os.getenv('Deployment') == "True":
+if os.getenv('Deployment') == "false":
     db = DB(user=os.getenv('username'), password=os.getenv('password'),
             host=os.getenv('host'), dbname=os.getenv('dbname'))
 else:
-    db = DB(user='postgres', password='sudo',
-            dbname='', host='localhost')
+    db = DB(user='deztowsrnozxcu', password='9304342618105851292b5356e2feda5de0043422a890dfa2d823cd29de252aae',
+            dbname='d8i2llkknq1q9n', host='ec2-50-17-225-140.compute-1.amazonaws.com:5432')
 
 api = Api(app, prefix='/api/v2', version='2.0', title='Fast-Foods-Api')
 jwt = JWTManager(app)
