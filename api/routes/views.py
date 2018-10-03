@@ -209,8 +209,18 @@ class Orders(Resource):
 
 @api.route('/orders/<int:orderId>')
 class Order(Resource):
+    @jwt_required
+    @api.doc(params=jwt)
     def get(self, orderId):
-        return db.get_order(orderId)
+        current_user = get_jwt_identity()
+        user = db.find_by_username(current_user)
+        admin = user[3]
+        if admin == True:
+            order = db.find_order_by_id(orderId)
+            if order:
+                return db.get_order(orderId)
+            return {'message': 'order with Id {} doesnt exist'.format(orderId)}
+        return {'message': 'You cant preform this action because you are unauthorised'}
 
     @api.expect(orderstatus)
     def put(self, orderId):
