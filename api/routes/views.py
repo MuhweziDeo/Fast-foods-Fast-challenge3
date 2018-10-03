@@ -1,9 +1,9 @@
 from flask import jsonify
 from flask_restplus import Api, Resource, fields
-from flask_jwt_extended import jwt_required, JWTManager, create_access_token, get_jwt_identity
+from flask_jwt_extended import jwt_required, JWTManager, create_access_token, get_jwt_identity, verify_jwt_in_request
 from api.app import app
 from api.models.db import DB
-
+from functools import wraps
 
 db = DB()
 
@@ -50,6 +50,21 @@ jwt = {'Authorization': {'Authorization Bearer': 'Bearer',
                          'in': 'header',
                          'type': '',
                          'description': 'Bearer <token>'}}
+
+
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        verify_jwt_in_request()
+        current_user = get_jwt_identity()
+        user = db.find_by_username(current_user)
+        admin = user[3]
+        if admin != True:
+            return {'message': 'You cant preform this action because you are unauthorised'}, 401
+
+        return f(*args, **kwargs)
+
+    return wrapper
 
 
 @api.route('/auth/admin')
@@ -104,22 +119,17 @@ class Login(Resource):
 
 @api.route('/menu')
 class Menu(Resource):
-    @jwt_required
+    @admin_required
     @api.doc(params=jwt)
     @api.expect(meal, validate=True)
     def post(self):
-        current_user = get_jwt_identity()
-        user = db.find_by_username(current_user)
-        admin = user[3]
-        if admin == True:
-            data = api.payload
-            meal_name = data['meal_name']
-            price = data['price']
-            meal = db.find_meal_by_name(meal_name)
-            if meal:
-                return {'message': 'meal with name {} already exists'.format(meal_name)}, 404
-            return db.add_meal(meal_name, price)
-        return {'message': 'You cant preform this action because you are unauthorised'}, 401
+        data = api.payload
+        meal_name = data['meal_name']
+        price = data['price']
+        meal = db.find_meal_by_name(meal_name)
+        if meal:
+            return {'message': 'meal with name {} already exists'.format(meal_name)}, 404
+        return db.add_meal(meal_name, price)
 
     def get(self):
         return db.get_menu()
@@ -127,38 +137,28 @@ class Menu(Resource):
 
 @api.route('/meal/<int:meal_id>')
 class Meal(Resource):
-    @jwt_required
+    @admin_required
     @api.doc(params=jwt)
     @api.expect(mealupdate, validate=True)
     def put(self, meal_id):
         """update fastfood"""
-        current_user = get_jwt_identity()
-        user = db.find_by_username(current_user)
-        admin = user[3]
-        if admin == True:
-            meal = db.find_meal_by_id(meal_id)
-            if meal:
-                data = api.payload
-                meal_status = data['meal_status']
-                price = data['price']
-                return db.update_meal(meal_id, price, meal_status)
-            return {'message': 'You are trying to update a meal that doesnt exist',
-                    "help": 'check and confirm meal with id {} exists'.format(meal_id)}, 404
-        return {'message': 'You cant preform this action because you are unauthorised'}, 401
+        meal = db.find_meal_by_id(meal_id)
+        if meal:
+            data = api.payload
+            meal_status = data['meal_status']
+            price = data['price']
+            return db.update_meal(meal_id, price, meal_status)
+        return {'message': 'You are trying to update a meal that doesnt exist',
+                "help": 'check and confirm meal with id {} exists'.format(meal_id)}, 404
 
-    @jwt_required
+    @admin_required
     @api.doc(params=jwt)
     def delete(self, meal_id):
         """Delete FastFood"""
-        current_user = get_jwt_identity()
-        user = db.find_by_username(current_user)
-        admin = user[3]
-        if admin == True:
-            fastfood = db.find_meal_by_id(meal_id)
-            if fastfood is None:
-                return {'message': 'meal with meal_id "{}" you tried to delete doesnt exit'.format(meal_id)}, 404
-            return db.delete_meal(meal_id)
-        return {'message': 'You cant preform this action because you are unauthorised'}, 401
+        fastfood = db.find_meal_by_id(meal_id)
+        if fastfood is None:
+            return {'message': 'meal with meal_id "{}" you tried to delete doesnt exit'.format(meal_id)}, 404
+        return db.delete_meal(meal_id)
 
 
 @api.route('/users/orders')
@@ -189,48 +189,35 @@ class UserOrders(Resource):
 
 @api.route('/orders')
 class Orders(Resource):
-    @jwt_required
+    @admin_required
     @api.doc(params=jwt)
     def get(self):
-        current_user = get_jwt_identity()
-        user = db.find_by_username(current_user)
-        admin = user[3]
-        if admin == True:
-            return db.get_all_orders(), 200
-        return {'message': 'You cant preform this action because you are unauthorised'}, 401
+        '''Get All Orders'''
+        return db.get_all_orders(), 200
 
 
 @api.route('/orders/<int:orderId>')
 class Order(Resource):
-    @jwt_required
+    @admin_required
     @api.doc(params=jwt)
     def get(self, orderId):
-        current_user = get_jwt_identity()
-        user = db.find_by_username(current_user)
-        admin = user[3]
-        if admin == True:
-            order = db.find_order_by_id(orderId)
-            if order:
-                return db.get_order(orderId), 200
-            return {'message': 'order with Id {} doesnt exist'.format(orderId)}, 404
-        return {'message': 'You cant preform this action because you are unauthorised'}, 401
+        '''Get one order'''
+        order = db.find_order_by_id(orderId)
+        if order:
+            return db.get_order(orderId), 200
+        return {'message': 'order with Id {} doesnt exist'.format(orderId)}, 404
 
     @api.expect(orderstatus, validate=True)
     @jwt_required
     @api.doc(params=jwt)
     def put(self, orderId):
         """ Update order status"""
-        current_user = get_jwt_identity()
-        user = db.find_by_username(current_user)
-        admin = user[3]
-        if admin == True:
-            order = db.find_order_by_id(orderId)
-            if order:
-                data = api.payload
-                status = data['status']
-                return db.update_order_status(orderId, status), 201
-            return {'message': 'order {} doesnt exist'.format(orderId)}
-        return {'message': 'You cant preform this action because you are unauthorised'}, 401
+        order = db.find_order_by_id(orderId)
+        if order:
+            data = api.payload
+            status = data['status']
+            return db.update_order_status(orderId, status), 201
+        return {'message': 'order {} doesnt exist'.format(orderId)}
 
 
 @app.errorhandler(404)
