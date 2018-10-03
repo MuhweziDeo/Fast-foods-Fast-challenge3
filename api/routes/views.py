@@ -153,12 +153,19 @@ class Meal(Resource):
                     "help": 'check and confirm meal with id {} exists'.format(meal_id)}
         return {'message': 'You cant preform this action because you are unauthorised'}
 
+    @jwt_required
+    @api.doc(params=jwt)
     def delete(self, meal_id):
         """Delete FastFood"""
-        fastfood = db.find_meal_by_id(meal_id)
-        if fastfood is None:
-            return {'message': 'meal with meal_id "{}" you tried to delete doesnt exit'.format(meal_id)}
-        return db.delete_meal(meal_id)
+        current_user = get_jwt_identity()
+        user = db.find_by_username(current_user)
+        admin = user[3]
+        if admin == True:
+            fastfood = db.find_meal_by_id(meal_id)
+            if fastfood is None:
+                return {'message': 'meal with meal_id "{}" you tried to delete doesnt exit'.format(meal_id)}
+            return db.delete_meal(meal_id)
+        return {'message': 'You cant preform this action because you are unauthorised'}
 
 
 @api.route('/users/orders')
