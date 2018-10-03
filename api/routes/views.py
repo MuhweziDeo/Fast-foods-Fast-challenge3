@@ -52,6 +52,24 @@ jwt = {'Authorization': {'Authorization Bearer': 'Bearer',
                          'description': 'Bearer <token>'}}
 
 
+@api.route('/auth/admin')
+class AdminRegistration(Resource):
+    @api.expect(user)
+    def post(self):
+        data = api.payload
+        username = data['username']
+        password = data['password']
+        confirm_password = data['confirm']
+        user = db.find_by_username(username)
+        if user is None:
+            if confirm_password == password:
+                return db.register_admin(username, password)
+            else:
+                return {'message': 'passwords must match '}
+        else:
+            return {'message': 'username {} already taken'.format(username)}
+
+
 @api.route('/auth/signup')
 class Signup(Resource):
     @api.expect(user)
