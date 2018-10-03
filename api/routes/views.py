@@ -134,17 +134,24 @@ class Menu(Resource):
 
 @api.route('/meal/<int:meal_id>')
 class Meal(Resource):
+    @jwt_required
+    @api.doc(params=jwt)
     @api.expect(mealupdate)
     def put(self, meal_id):
         """update fastfood"""
-        meal = db.find_meal_by_id(meal_id)
-        if meal:
-            data = api.payload
-            meal_status = data['meal_status']
-            price = data['price']
-            return db.update_meal(meal_id, price, meal_status)
-        return {'message': 'You are trying to update a meal that doesnt exist',
-                "help": 'check and confirm meal with id {} exists'.format(meal_id)}
+        current_user = get_jwt_identity()
+        user = db.find_by_username(current_user)
+        admin = user[3]
+        if admin == True:
+            meal = db.find_meal_by_id(meal_id)
+            if meal:
+                data = api.payload
+                meal_status = data['meal_status']
+                price = data['price']
+                return db.update_meal(meal_id, price, meal_status)
+            return {'message': 'You are trying to update a meal that doesnt exist',
+                    "help": 'check and confirm meal with id {} exists'.format(meal_id)}
+        return {'message': 'You cant preform this action because you are unauthorised'}
 
     def delete(self, meal_id):
         """Delete FastFood"""
