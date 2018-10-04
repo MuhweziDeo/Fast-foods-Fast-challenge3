@@ -4,12 +4,13 @@ from flask_jwt_extended import jwt_required, JWTManager, create_access_token, ge
 from api.app import app
 from api.models.db import DB
 from functools import wraps
+import os
 
 db = DB()
 
 api = Api(app, prefix='/api/v2', version='2.0', title='Fast-Foods-Api')
 jwt = JWTManager(app)
-app.config['JWT_SECRET_KEY'] = 'thisissecretkhahxcahiahiac'
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
 db.create_db_tables()
 
