@@ -35,6 +35,7 @@ https://fast-foods-api-main.herokuapp.com/
 
 # End Points 
 EndPoint                            | Functionality
+    ------------------------            | --------------------
     `POST /auth/signup `                     | `create a user account`
     `POST /auth/login `                     | `Verify a user and create access token`
     `POST /users/orders `                     | `Create an order`
