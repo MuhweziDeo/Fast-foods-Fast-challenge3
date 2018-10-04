@@ -2,6 +2,8 @@ import unittest
 import json
 from api.app import app
 from api.models.db import DB
+from api.models.menu import Menu
+from api.models.users import Users
 from datetime import datetime
 
 
@@ -11,16 +13,14 @@ class DatabaseTest(unittest.TestCase):
     self.app = app
     self.db = DB()
     self.db.create_db_tables()
+    self.dbmenu = Menu()
+    self.dbuser = Users()
+    self.dbuser.register_admin('super', 'super')
     self.client = self.app.test_client()
 
-    self.admin_reg = {
-        'username': 'admin',
-        'password': 'admin',
-        'confirm': 'admin'
-    }
     self.admin = {
-        'username': 'admin',
-        'password': 'admin'
+        'username': 'super',
+        'password': 'super'
     }
 
     self.meal = {
@@ -33,10 +33,6 @@ class DatabaseTest(unittest.TestCase):
     }
 
   def test_add_meal_option(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
     res_login = self.client.post('/api/v2/auth/login',
                                  data=json.dumps(self.admin),
                                  content_type='application/json')
@@ -51,10 +47,6 @@ class DatabaseTest(unittest.TestCase):
     self.assertIn('meal pizza added', str(res.data))
 
   def test_add_already_existing_meal(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
     res_login = self.client.post('/api/v2/auth/login',
                                  data=json.dumps(self.admin),
                                  content_type='application/json')
@@ -75,10 +67,6 @@ class DatabaseTest(unittest.TestCase):
     self.assertIn('meal with name pizza already exists', str(res_2.data))
 
   def test_get_menu(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
     res_login = self.client.post('/api/v2/auth/login',
                                  data=json.dumps(self.admin),
                                  content_type='application/json')
@@ -96,10 +84,6 @@ class DatabaseTest(unittest.TestCase):
     self.assertIn("menu", str(res.data))
 
   def test_update_meal(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
     res_login = self.client.post('/api/v2/auth/login',
                                  data=json.dumps(self.admin),
                                  content_type='application/json')
@@ -120,10 +104,6 @@ class DatabaseTest(unittest.TestCase):
     self.assertIn("meal updated", str(res.data))
 
   def test_update_non_existing_meal(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
     res_login = self.client.post('/api/v2/auth/login',
                                  data=json.dumps(self.admin),
                                  content_type='application/json')
@@ -145,10 +125,6 @@ class DatabaseTest(unittest.TestCase):
         "You are trying to update a meal that doesnt exist", str(res.data))
 
   def test_delete_meal(self):
-    res = self.client.post('/api/v2/auth/admin',
-                           data=json.dumps(self.admin_reg),
-                           content_type='application/json'
-                           )
     res_login = self.client.post('/api/v2/auth/login',
                                  data=json.dumps(self.admin),
                                  content_type='application/json')
