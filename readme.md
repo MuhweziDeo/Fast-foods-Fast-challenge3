@@ -78,7 +78,9 @@ and quantity of the meal they want.
 }`
 
 ##  Running locally and Testing
-1. Running Locally
+# Before testing Ensure you have Postgres installed and change password for local user
+
+1.*Running Locally*
 - Clone project repository ` git clone https://github.com/MuhweziDeo/Fast-foods-Fast-challenge3.git`
 - cd into project directory
 - Install a virtual enviroment `virtualenv venv`
@@ -87,10 +89,11 @@ and quantity of the meal they want.
 - Install dependencies `pip install -r requirements.txt`
 - run server,open terminal and run `python run.py`
 
-2. Testing
+2. *Testing*
 - cd into project directory 
-- Set up enviroment  for testing using export APP_SETTINGS='testing'
+- Set up enviroment  for testing using `export APP_SETTINGS='testing'`
 - open terminal and run `py.test --cov`
+
 
 # Break down of tests
 - Test(test_db) Database CRUD operations.
