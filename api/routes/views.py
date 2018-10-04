@@ -73,7 +73,7 @@ def admin_required(f):
     def wrapper(*args, **kwargs):
         verify_jwt_in_request()
         current_user = get_jwt_identity()
-        user = db.find_by_username(current_user)
+        user = dbusers.find_by_username(current_user)
         admin = user[3]
         if admin != True:
             return {'message': 'You cant preform this action because you are unauthorised'}, 401
