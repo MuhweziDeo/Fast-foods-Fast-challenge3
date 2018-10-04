@@ -36,8 +36,8 @@ https://fast-foods-api-main.herokuapp.com/
 # End Points 
 | EndPoint  | Function |
 | ------------- | ------------- |
-|GET /orders   | Get all the orders |
-|GET /orders/orderId| Fetch a specific order  |
+|POST /auth/signup  | create a user account |
+|POST /auth/login|  |Verify a user and create access token|
 |POST /orders|Place a new order.  |
 |PUT /orders/orderId|Update the status of an order. |
 
