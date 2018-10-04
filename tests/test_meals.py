@@ -46,26 +46,6 @@ class DatabaseTest(unittest.TestCase):
                                     'Bearer {}'.format(self.token)})
     self.assertIn('meal pizza added', str(res.data))
 
-  def test_add_already_existing_meal(self):
-    res_login = self.client.post('/api/v2/auth/login',
-                                 data=json.dumps(self.admin),
-                                 content_type='application/json')
-    login_data = res_login.json
-    self.token = login_data['token']
-
-    res = self.client.post('/api/v2/menu',
-                           data=json.dumps(self.meal),
-                           content_type="application/json",
-                           headers={'Authorization':
-                                    'Bearer {}'.format(self.token)})
-    res_2 = self.client.post('/api/v2/menu',
-                             data=json.dumps(self.meal),
-                             content_type="application/json",
-                             headers={'Authorization':
-                                      'Bearer {}'.format(self.token)})
-
-    self.assertIn('meal with name pizza already exists', str(res_2.data))
-
   def test_get_menu(self):
     res_login = self.client.post('/api/v2/auth/login',
                                  data=json.dumps(self.admin),
