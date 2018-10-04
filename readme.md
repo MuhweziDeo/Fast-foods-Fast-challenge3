@@ -36,8 +36,8 @@ https://fast-foods-api-main.herokuapp.com/
 # End Points 
 | EndPoint  | Function |
 | ------------- | ------------- |
-|POST /auth/signup  | create a user account |
-|POST /auth/login  | Verify a user and create access token |
+|`POST /auth/signup`  | create a user account |
+|`POST /auth/login` | Verify a user and create access token |
 |`POST /users/orders `        | Create an order|
 |`GET /users/orders  `               | Get orders of a particular user|
 |`GET /orders `         | Get all orders(Admin only)|
@@ -48,26 +48,26 @@ https://fast-foods-api-main.herokuapp.com/
 
 # How to use
 - Signing up,username,password and confirm password are expected in post data.
-{
+`{
   "username": "string",
   "password": "string",
   "confirm": "string"
-}.
+}`
 password and confrim fields must match before an account is created
 
 - Logging In, Users provide in a username and password which are verified if they
 belong to any user in the database.
-{
+`{
   "username": "string",
   "password": "string"
-}
+}`
 
 - create a meal option,only Admins can create a meal option by entering a meal name 
 and price, by default meal_status is set to Available.
-{
+`{
   "meal_name": "string",
   "price": 0
-}
+}`
 
 - create order, a user can create an order by passing a valid token,location,meal
 and quantity of the meal they want.
