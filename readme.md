@@ -71,11 +71,11 @@ and price, by default meal_status is set to Available.
 
 - create order, a user can create an order by passing a valid token,location,meal
 and quantity of the meal they want.
-{
+`{
   "location": "string",
   "quantity": 0,
   "meal": "string"
-}
+}`
 
 ##  Running locally and Testing
 1. Running Locally
