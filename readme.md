@@ -37,9 +37,14 @@ https://fast-foods-api-main.herokuapp.com/
 | EndPoint  | Function |
 | ------------- | ------------- |
 |POST /auth/signup  | create a user account |
-|POST /auth/login|  |Verify a user and create access token|
-|POST /orders|Place a new order.  |
-|PUT /orders/orderId|Update the status of an order. |
+|POST /auth/login  | Verify a user and create access token |
+|`POST /users/orders `        | Create an order|
+|`GET /users/orders  `               | Get orders of a particular user|
+|`GET /orders `         | Get all orders(Admin only)|
+|`GET /orders/<orderId> `        | Get a particular order by its orderId(Admin only)|
+|`PUT /orders/<orderId>`       | update order status of an order(Admin only)|
+|`GET /menu`       | view Meals on the menu|
+|`POST /menu`       | Add meal option(Admin only)|
 
 # How to use
 - Signing up,username,password and confirm password are expected in post data.
