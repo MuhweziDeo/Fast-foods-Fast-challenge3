@@ -77,8 +77,8 @@ and quantity of the meal they want.
   "meal": "string"
 }`
 
-##  Running locally and Testing
-# Before testing Ensure you have Postgres installed and change password for local user
+# Running locally and Testing
+### Before testing Ensure you have Postgres installed and change password for local user
 
 1.*Running Locally*
 - Clone project repository ` git clone https://github.com/MuhweziDeo/Fast-foods-Fast-challenge3.git`
