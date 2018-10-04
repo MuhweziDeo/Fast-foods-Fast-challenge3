@@ -21,6 +21,14 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 db.create_db_tables()
 
 
+def register_super_admin(username, password):
+    if dbusers.find_by_username(username) == None:
+        dbusers.register_admin(username, password)
+    return 'super'
+
+
+register_super_admin('super', 'super')
+
 user = api.model('User', {
     'username': fields.String(description="username", required=True, min_length=4),
     'password': fields.String(description="user password", required=True, min_length=4),
