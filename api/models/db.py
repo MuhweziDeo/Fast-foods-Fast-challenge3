@@ -1,3 +1,4 @@
+
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -21,7 +22,6 @@ class DB():
 
             self.cur = self.connection.cursor()
             self.connection.autocommit = True
-            print('connection successfully established')
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
 
@@ -63,24 +63,16 @@ class DB():
 
             """
         )
-        try:
-            for query in queries:
-                self.cur.execute(query)
-                self.connection.commit()
-                print('Tables Created')
-        except(Exception, psycopg2.DatabaseError) as error:
-            print(error, "Dont Panic But  Table Creation Failed")
+
+        for query in queries:
+            self.cur.execute(query)
+            self.connection.commit()
 
     def drop_all_tables(self, *tables):
-        try:
-            for table in tables:
-                query = 'DROP TABLE IF EXISTS {}'.format(table)
-                self.cur.execute(query)
-                self.connection.commit()
-                print(query)
-                print("Deleted")
-        except(Exception, psycopg2.DatabaseError) as error:
-            print(error, 'Failed')
+        for table in tables:
+            query = 'DROP TABLE IF EXISTS {}'.format(table)
+            self.cur.execute(query)
+            self.connection.commit()
 
     def hash_password(self, password):
         '''HASH PASSWORDS'''
