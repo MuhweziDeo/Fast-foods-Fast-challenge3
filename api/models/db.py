@@ -12,13 +12,13 @@ class DB():
         try:
             if os.getenv('APP_SETTINGS') == "testing":
                 self.connection = psycopg2.connect(
-                    str('postgresql://postgres:sudo@127.0.0.1:5432/fastfoods_test'))
+                    'postgresql://postgres:sudo@127.0.0.1:5432/fastfoods_test')
             elif os.getenv('APP_SETTINGS') == "development":
                 self.connection = psycopg2.connect(
-                    str('postgresql://postgres:sudo@127.0.0.1:5432/apimain'))
+                    'postgresql://postgres:sudo@127.0.0.1:5432/apimain')
             else:
                 self.connection = psycopg2.connect(
-                    str(os.getenv('DATABASE_URL')))
+                    os.getenv('DATABASE_URL'))
 
             self.cur = self.connection.cursor()
             self.connection.autocommit = True
@@ -165,7 +165,8 @@ class DB():
 
     def get_order_history_for_a_user(self, user_id):
         '''Get order history of a specific user'''
-        query = "SELECT * FROM orders WHERE user_id='{}'".format(user_id)
+        query = "SELECT orderid,meal_name,quantity,status,order_date FROM orders WHERE user_id='{}'".format(
+            user_id)
         self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
         self.cur.execute(query)
         user_orders = self.cur.fetchall()
