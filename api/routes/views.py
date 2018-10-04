@@ -85,6 +85,7 @@ def admin_required(f):
 
 @api.route('/auth/admin')
 class AdminRegistration(Resource):
+    @admin_required
     @api.expect(user, validate=True)
     def post(self):
         data = api.payload
