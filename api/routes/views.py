@@ -92,10 +92,10 @@ class AdminRegistration(Resource):
         username = data['username']
         password = data['password']
         confirm_password = data['confirm']
-        user = db.find_by_username(username)
+        user = dbusers.find_by_username(username)
         if user is None:
             if confirm_password == password:
-                return db.register_admin(username, password), 201
+                return dbusers.register_admin(username, password), 201
             return {'message': 'passwords must match '}
         return {'message': 'username {} already taken'.format(username)}
 
