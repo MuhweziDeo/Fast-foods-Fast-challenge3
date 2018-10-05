@@ -29,8 +29,6 @@ class Menu(DB):
     def get_menu(self):
         '''get meals on menu'''
         query = "SELECT * FROM fastfoods"
-        # self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
-        # self.cur.execute(query)
         self.real_dic_cursor(query)
         fastfoods = self.cur.fetchall()
         if fastfoods:

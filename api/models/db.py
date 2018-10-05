@@ -77,5 +77,3 @@ class DB():
   def real_dic_cursor(self, query):
     self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
     self.cur.execute(query)
-
-  '''ORDER OPERATIONS'''
