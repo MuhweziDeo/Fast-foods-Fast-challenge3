@@ -30,7 +30,32 @@ https://fast-foods-api-main.herokuapp.com/
 - Flask_Restplus(flask framework for building APis)
 - Pytest(Testing Framework)
 - Flask-Jwt-extended(Json Web Token authentication library)
-- Postgres(Database server)
+- Postgres(Database)
+
+# Database Structure
+### users.
+|column name|type|
+|-----------------|---------------|
+|user_id|int(primary key,unique)|
+|username|character(unique)|
+|password|characters|
+|admin|boolen|
+
+### fastfoods.
+|column|type|
+|--------------------|--------------------|
+|meal_id|int(unique)|
+|meal_name|varchar(unique)|
+|meal_status|varchar(Default Availabe)
+
+### orders.
+|column|type|
+|--------------------|--------------------|
+|orderId|int(unique) primary key|
+|location|varchar(unique)|
+|meal_name|varchar(unique) fk(references meal_name)|
+|quantity|int|
+|status|varchar(Default New)
 
 
 # End Points 
