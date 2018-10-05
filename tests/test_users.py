@@ -2,6 +2,7 @@ import unittest
 import json
 from api.app import app
 from api.models.db import DB
+from api.models.users import Users
 from datetime import datetime
 
 
@@ -11,6 +12,7 @@ class DatabaseTest(unittest.TestCase):
     self.app = app
     self.db = DB()
     self.db.create_db_tables()
+    self.dbusers = Users()
     self.client = self.app.test_client()
     self.user = {
         'username': 'deedeo',
