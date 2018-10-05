@@ -21,7 +21,7 @@ class Menu(DB):
         if fastfood:
             meal_name = fastfood[1]
             return meal_name
-                return None
+        return None
 
     def get_menu(self):
         '''get meals on menu'''
