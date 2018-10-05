@@ -89,8 +89,8 @@ class AdminRegistration(Resource):
     @api.expect(user, validate=True)
     def post(self):
         data = api.payload
-        username = data['username']
-        password = data['password']
+        username = data['username'].strip()
+        password = data['password'].strip()
         confirm_password = data['confirm']
         user = dbusers.find_by_username(username)
         if user is None:
@@ -105,8 +105,8 @@ class Signup(Resource):
     @api.expect(user, validate=True)
     def post(self):
         data = api.payload
-        username = data['username']
-        password = data['password']
+        username = data['username'].strip()
+        password = data['password'].strip()
         confirm_password = data['confirm']
         user = dbusers.find_by_username(username)
         if user is None:
@@ -121,8 +121,8 @@ class Login(Resource):
     @api.expect(userlogin)
     def post(self):
         data = api.payload
-        username = data['username']
-        attempted_password = data['password']
+        username = data['username'].strip()
+        attempted_password = data['password'].strip()
         user = dbusers.find_by_username(username)
         if user:
             pasword_hash = user[2]
@@ -141,7 +141,7 @@ class Menu(Resource):
     @api.expect(meal, validate=True)
     def post(self):
         data = api.payload
-        meal_name = data['meal_name']
+        meal_name = data['meal_name'].strip()
         price = data['price']
         meal = dbmenu.find_meal_by_name(meal_name)
         if meal:
@@ -162,7 +162,7 @@ class Meal(Resource):
         meal = dbmenu.find_meal_by_id(meal_id)
         if meal:
             data = api.payload
-            meal_status = data['meal_status']
+            meal_status = data['meal_status'].strip()
             price = data['price']
             return dbmenu.update_meal(meal_id, price, meal_status)
         return {'message': 'You are trying to update a meal that doesnt exist',
@@ -186,8 +186,8 @@ class UserOrders(Resource):
     def post(self):
         """ Post An Order"""
         data = api.payload
-        meal = data['meal']
-        location = data['location']
+        meal = data['meal'].strip()
+        location = data['location'].strip()
         quantity = data['quantity']
         current_user = get_jwt_identity()
         user = dbusers.find_by_username(current_user)
@@ -232,7 +232,7 @@ class Order(Resource):
         order = dborder.find_order_by_id(orderId)
         if order:
             data = api.payload
-            status = data['status']
+            status = data['status'].strip()
             return dborder.update_order_status(orderId, status), 201
         return {'message': 'order {} doesnt exist'.format(orderId)}
 
