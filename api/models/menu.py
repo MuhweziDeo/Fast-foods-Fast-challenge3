@@ -1,4 +1,5 @@
 from api.models.db import DB
+import psycopg2
 from psycopg2.extras import RealDictCursor
 
 
@@ -12,20 +13,15 @@ class Menu(DB):
 
     def find_meal_by_name(self, meal_name):
         '''find a meal by its name'''
-        try:
-            query = "SELECT meal_name FROM fastfoods WHERE meal_name='{}'".format(
+        query = "SELECT meal_name FROM fastfoods WHERE meal_name='{}'".format(
                 meal_name)
-            self.cur = self.connection.cursor()
-            self.cur.execute(query)
-            fastfood = self.cur.fetchone()
-            if fastfood:
-                meal_name = fastfood[1]
-                return meal_name
-            else:
+        self.cur = self.connection.cursor()
+        self.cur.execute(query)
+        fastfood = self.cur.fetchone()
+        if fastfood:
+            meal_name = fastfood[1]
+            return meal_name
                 return None
-        except(Exception, psycopg2.DatabaseError) as error:
-            print(error, 'Failed')
-            return {'error': str(error)}
 
     def get_menu(self):
         '''get meals on menu'''
