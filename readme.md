@@ -53,7 +53,8 @@ https://fast-foods-api-main.herokuapp.com/
 |--------------------|--------------------|
 |orderId|int(unique) primary key|
 |location|varchar(unique)|
-|meal_name|varchar(unique) fk(references meal_name)|
+|meal_name|varchar(unique) fk(references meal_name in fastfoods)|
+|user_id|int(fk references user_id in users table)|
 |quantity|int|
 |status|varchar(Default New)
 
