@@ -7,29 +7,29 @@ from datetime import datetime
 
 
 class DB():
-    def __init__(self):
-        '''INIT DB CLASS'''
-        try:
-            if os.getenv('APP_SETTINGS') == "testing":
-                self.connection = psycopg2.connect(
-                    'postgresql://postgres:sudo@127.0.0.1:5432/fastfoods_test')
-            elif os.getenv('APP_SETTINGS') == "development":
-                self.connection = psycopg2.connect(
-                    'postgresql://postgres:sudo@127.0.0.1:5432/apimain')
-            else:
-                self.connection = psycopg2.connect(
-                    os.getenv('DATABASE_URL'))
+  def __init__(self):
+    '''INIT DB CLASS'''
+    try:
+      if os.getenv('APP_SETTINGS') == "testing":
+        self.connection = psycopg2.connect(
+            'postgresql://postgres:sudo@127.0.0.1:5432/fastfoods_test')
+      elif os.getenv('APP_SETTINGS') == "development":
+        self.connection = psycopg2.connect(
+            'postgresql://postgres:sudo@127.0.0.1:5432/apimain')
+      else:
+        self.connection = psycopg2.connect(
+            os.getenv('DATABASE_URL'))
 
-            self.cur = self.connection.cursor()
-            self.connection.autocommit = True
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
+      self.cur = self.connection.cursor()
+      self.connection.autocommit = True
+    except(Exception, psycopg2.DatabaseError) as e:
+      print(e)
 
-    def create_db_tables(self):
-        '''CREATE DATABASE TABLES'''
-        queries = (
+  def create_db_tables(self):
+    '''CREATE DATABASE TABLES'''
+    queries = (
 
-            """
+        """
             CREATE TABLE IF not EXISTS  fastfoods(
               meal_id serial ,
               meal_name varchar(20) not null primary key unique,
@@ -37,7 +37,7 @@ class DB():
               meal_status varchar(30) default 'Available'
             );
             """,
-            """
+        """
             CREATE TABLE IF not EXISTS  users(
               user_id serial primary key,
               username varchar(25) not null unique,
@@ -47,7 +47,7 @@ class DB():
             );
             """,
 
-            """
+        """
             CREATE TABLE IF not EXISTS orders(
               orderid serial primary key,
               user_id int not null,
@@ -62,16 +62,20 @@ class DB():
             );
 
             """
-        )
+    )
 
-        for query in queries:
-            self.cur.execute(query)
-            self.connection.commit()
+    for query in queries:
+      self.cur.execute(query)
+      self.connection.commit()
 
-    def drop_all_tables(self, *tables):
-        for table in tables:
-            query = 'DROP TABLE IF EXISTS {}'.format(table)
-            self.cur.execute(query)
-            self.connection.commit()
+  def drop_all_tables(self, *tables):
+    for table in tables:
+      query = 'DROP TABLE IF EXISTS {}'.format(table)
+      self.cur.execute(query)
+      self.connection.commit()
 
-    '''ORDER OPERATIONS'''
+  def real_dic_cursor(self, query):
+    self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
+    self.cur.execute(query)
+
+  '''ORDER OPERATIONS'''

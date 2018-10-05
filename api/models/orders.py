@@ -26,8 +26,9 @@ class Orders(DB):
         '''Get order history of a specific user'''
         query = "SELECT orderid,meal_name,quantity,status,order_date FROM orders WHERE user_id='{}'".format(
             user_id)
-        self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
-        self.cur.execute(query)
+        # self.cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        # self.cur.execute(query)
+        self.real_dic_cursor(query)
         user_orders = self.cur.fetchall()
         if user_orders:
             return {'orders for user with id {}'.format(user_id): user_orders}
