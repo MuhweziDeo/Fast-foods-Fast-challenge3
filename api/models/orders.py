@@ -5,6 +5,9 @@ from psycopg2.extras import RealDictCursor
 
 
 class Orders(DB):
+    def __init__(self):
+        DB.__init__(self)
+
     def create_order(self, location, quantity, user_id, meal):
         '''create an order'''
         try:

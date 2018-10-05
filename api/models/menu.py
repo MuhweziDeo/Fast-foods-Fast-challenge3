@@ -4,6 +4,9 @@ from psycopg2.extras import RealDictCursor
 
 
 class Menu(DB):
+    def __init__(self):
+        DB.__init__(self)
+
     def add_meal(self, meal_name, price):
         '''add meal option to menu'''
         query = "INSERT INTO fastfoods(meal_name,price) VALUES('{}',{})".format(
