@@ -32,8 +32,8 @@ https://fast-foods-api-main.herokuapp.com/
 - Flask-Jwt-extended(Json Web Token authentication library)
 - Postgres(Database)
 
-# Database Structure
-1. users.
+## Database Structure
+# users.
 |column name|type|
 |-----------------|---------------|
 |user_id|int(primary key,unique)|
@@ -41,14 +41,14 @@ https://fast-foods-api-main.herokuapp.com/
 |password|characters|
 |admin|boolen|
 
-2. fastfoods.
+# fastfoods.
 |column|type|
 |--------------------|--------------------|
 |meal_id|int(unique)|
 |meal_name|varchar(unique)|
 |meal_status|varchar(Default Availabe)
 
-3. orders.
+# orders.
 |column|type|
 |--------------------|--------------------|
 |orderId|int(unique) primary key|
