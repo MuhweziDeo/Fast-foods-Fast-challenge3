@@ -18,8 +18,9 @@ class Orders(DB):
             return {'meaasge': 'order placed successfully'}
         except(Exception, psycopg2.DatabaseError) as e:
             '''since meal references meal name in fastfoods
-            when a user tries to order a meal not in the table
-            it database operation fials because it violates database contraints '''
+            when a user tries to order a meal not in the fastfoods table
+            the database operation fails because it violates foreign_key contraints
+            which is the exception '''
             return {'message': 'Its Possible meal {} is not on the menu '.format(meal)}
 
     def get_order_history_for_a_user(self, user_id):
