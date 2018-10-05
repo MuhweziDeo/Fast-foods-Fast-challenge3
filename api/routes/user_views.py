@@ -1,6 +1,8 @@
 from flask_restplus import Resource, fields
-from api.routes.views import api, jwt, admin_required
+from flask_jwt_extended import jwt_required, JWTManager, create_access_token, get_jwt_identity, verify_jwt_in_request
+from api.routes.views import api, jwt
 from api.models.users import Users
+from functools import wraps
 dbusers = Users()
 
 
@@ -11,6 +13,22 @@ def register_super_admin(username, password):
 
 
 register_super_admin('super', 'super')
+
+
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        verify_jwt_in_request()
+        current_user = get_jwt_identity()
+        user = dbusers.find_by_username(current_user)
+        admin = user[3]
+        if admin != True:
+            return {'message': 'You cant preform this action because you are unauthorised'}, 401
+
+        return f(*args, **kwargs)
+
+    return wrapper
+
 
 user = api.model('User', {
     'username': fields.String(description="username", required=True, min_length=4),

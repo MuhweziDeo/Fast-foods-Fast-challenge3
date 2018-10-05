@@ -19,16 +19,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
 db.create_db_tables()
-
-
-def register_super_admin(username, password):
-    if dbusers.find_by_username(username) == None:
-        dbusers.register_admin(username, password)
-    return 'super'
-
-
-register_super_admin('super', 'super')
-
+from api.routes.user_views import user, userlogin, AdminRegistration, Signup, Login
 
 meal = api.model('Meal Option', {
     'meal_name': fields.String(description="meal_name", required=True, min_length=4),
@@ -55,6 +46,21 @@ jwt = {'Authorization': {'Authorization Bearer': 'Bearer',
                          'in': 'header',
                          'type': '',
                          'description': 'Bearer <token>'}}
+
+
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        verify_jwt_in_request()
+        current_user = get_jwt_identity()
+        user = dbusers.find_by_username(current_user)
+        admin = user[3]
+        if admin != True:
+            return {'message': 'You cant preform this action because you are unauthorised'}, 401
+
+        return f(*args, **kwargs)
+
+    return wrapper
 
 
 @api.route('/menu')
