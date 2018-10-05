@@ -77,6 +77,7 @@ https://fast-foods-api-main.herokuapp.com/
 |`POST /menu`       | Add meal option(Admin only)|
 
 # How to use
+- Super User`{'username':'super',password:"super"}`, this the overall admin user created by default
 - Signing up,username,password and confirm password are expected in post data.
 `{
   "username": "string",
