@@ -33,7 +33,7 @@ https://fast-foods-api-main.herokuapp.com/
 - Postgres(Database)
 
 # Database Structure
-1. users
+1. users.
 |column name|type|
 |-----------------|---------------|
 |user_id|int(primary key,unique)|
@@ -41,14 +41,14 @@ https://fast-foods-api-main.herokuapp.com/
 |password|characters|
 |admin|boolen|
 
-2. fastfoods
+2. fastfoods.
 |column|type|
 |--------------------|--------------------|
 |meal_id|int(unique)|
 |meal_name|varchar(unique)|
 |meal_status|varchar(Default Availabe)
 
-3. orders
+3. orders.
 |column|type|
 |--------------------|--------------------|
 |orderId|int(unique) primary key|
