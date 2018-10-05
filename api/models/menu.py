@@ -38,10 +38,10 @@ class Menu(DB):
 
     def find_meal_by_id(self, meal_id):
         '''find a meal by its ID'''
-        query = "SELECT meal_name FROM fastfoods WHERE meal_id='{}'".format(
-                meal_id)
+        query1 = "SELECT meal_name FROM fastfoods WHERE meal_id='{}'".format(
+            meal_id)
         self.cur = self.connection.cursor()
-        self.cur.execute(query)
+        self.cur.execute(query1)
         fastfood = self.cur.fetchone()
         if fastfood:
             meal_id = fastfood[0]
