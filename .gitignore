@@ -22,3 +22,15 @@ venv/
 
 # mypy
 .mypy_cache
+
+    .pytest_cache/
+    api/__init__.pyc
+    api/app.pyc
+    api/models/__init__.pyc
+    api/models/db.pyc
+    api/models/menu.pyc
+    api/models/orders.pyc
+    api/models/users.pyc
+    api/routes/__init__.pyc
+    api/routes/views.pyc
+    tests/__init__.pyc
