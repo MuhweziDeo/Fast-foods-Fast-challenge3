@@ -182,7 +182,7 @@ class Meal(Resource):
 class UserOrders(Resource):
     @jwt_required
     @api.doc(params=jwt)
-    @api.expect(order, validate=True)
+    @api.expect(order)
     def post(self):
         """ Post An Order"""
         data = api.payload
