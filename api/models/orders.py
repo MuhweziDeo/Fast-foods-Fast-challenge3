@@ -40,7 +40,7 @@ class Orders(DB):
         self.cur.execute(query)
         orders = self.cur.fetchall()
         if orders:
-            return {"All Orders": orders}
+            return {"All_Orders": orders}
         return {'message': 'No orders have been placed yet'}
 
     def get_order(self, orderId):

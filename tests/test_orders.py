@@ -129,7 +129,7 @@ class DatabaseTest(unittest.TestCase):
                           headers={'Authorization':
                                    'Bearer {}'.format(self.token_admin)})
 
-    self.assertIn("All Orders", str(res.data))
+    self.assertIn("All_Orders", str(res.data))
 
   def test_get_order(self):
     res_login = self.client.post('/api/v2/auth/login',
