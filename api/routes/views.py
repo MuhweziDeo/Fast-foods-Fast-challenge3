@@ -138,7 +138,7 @@ class Login(Resource):
 class Menu(Resource):
     @admin_required
     @api.doc(params=jwt)
-    @api.expect(meal, validate=True)
+    @api.expect(meal)
     def post(self):
         data = api.payload
         meal_name = data['meal_name'].strip()
@@ -156,7 +156,7 @@ class Menu(Resource):
 class Meal(Resource):
     @admin_required
     @api.doc(params=jwt)
-    @api.expect(mealupdate, validate=True)
+    @api.expect(mealupdate)
     def put(self, meal_id):
         """update fastfood"""
         meal = dbmenu.find_meal_by_id(meal_id)
