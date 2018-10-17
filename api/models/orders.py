@@ -31,7 +31,7 @@ class Orders(DB):
         user_orders = self.cur.fetchall()
         if user_orders:
             return {'orders for user with id {}'.format(user_id): user_orders}
-        return {'message': 'user with id {} has placed any orders yet'.format(user_id)}
+        return {'message': 'You havent placed an orders yet'}
 
     def get_all_orders(self):
         '''get all orders'''
