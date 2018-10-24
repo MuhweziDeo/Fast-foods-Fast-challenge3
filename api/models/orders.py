@@ -15,7 +15,7 @@ class Orders(DB):
             query = "INSERT INTO orders(location,quantity,meal_name,user_id,order_date) VALUES('{}',{},'{}',{},'{}')".format(
                     location, quantity, meal, user_id, date)
             self.cur.execute(query)
-            return {'meaasge': 'order placed successfully'}
+            return {'message': 'order placed successfully'}
         except(Exception, psycopg2.DatabaseError) as e:
             '''since meal references meal name in fastfoods
             when a user tries to order a meal not in the fastfoods table
