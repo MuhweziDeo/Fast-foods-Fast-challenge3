@@ -102,7 +102,7 @@ class AdminRegistration(Resource):
 
 @api.route('/auth/signup')
 class Signup(Resource):
-    @api.expect(user, validate=True)
+    @api.expect(user)
     def post(self):
         data = api.payload
         username = data['username'].strip()
