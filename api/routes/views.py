@@ -111,7 +111,13 @@ class Signup(Resource):
         user = dbusers.find_by_username(username)
         if user is None:
             if confirm_password == password:
-                return dbusers.register_user(username, password)
+                token = create_access_token(identity=username)
+                return {
+                    "response":dbusers.register_user(username, password),
+                    "token":token,
+                    "username":username
+                }
+                
             return {'message': 'passwords must match '}
         return {'message': 'username {} already taken'.format(username)}
 
@@ -129,7 +135,7 @@ class Login(Resource):
             if dbusers.confirm_password_hash(attempted_password, pasword_hash):
                 token = create_access_token(identity=username)
                 return {'message': 'You have been Verified',
-                        'token': token}, 201
+                        'token': token,"username":username}, 201
             return {'message': 'password verification failed'}, 400
         return {'message': 'username {} deosnt exist'.format(username)}, 404
 

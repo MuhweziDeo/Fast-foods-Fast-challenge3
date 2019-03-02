@@ -1,6 +1,6 @@
 from api.models.db import DB
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from flask_jwt_extended import create_access_token
 
 class Users(DB):
     def __init__(self):
@@ -13,6 +13,7 @@ class Users(DB):
         create_user = "INSERT INTO users(username,password) VALUES ('{}','{}')".format(
             username, password)
         self.cur.execute(create_user)
+        
         return {'message': 'user created'}
 
     def hash_password(self, password):
