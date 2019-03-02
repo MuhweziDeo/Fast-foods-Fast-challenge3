@@ -24,7 +24,7 @@ db.create_db_tables()
 def register_super_admin(username, password):
     if dbusers.find_by_username(username) == None:
         dbusers.register_admin(username, password)
-    return 'super'
+    return False
 
 
 register_super_admin('super', 'super')
@@ -129,7 +129,7 @@ class Login(Resource):
             if dbusers.confirm_password_hash(attempted_password, pasword_hash):
                 token = create_access_token(identity=username)
                 return {'message': 'You have been Verified',
-                        'token': token}, 201
+                        'token': token,'username':username}, 201
             return {'message': 'password verification failed'}, 400
         return {'message': 'username {} deosnt exist'.format(username)}, 404
 
