@@ -9,19 +9,5 @@
   "tests/test_db.py::DBTestCase::test_get_order",
   "tests/test_db.py::DBTestCase::test_get_order_history_for_a_user",
   "tests/test_db.py::DBTestCase::test_update_meal_option",
-  "tests/test_db.py::DBTestCase::test_update_order_status",
-  "tests/test_meals.py::DatabaseTest::test_add_meal_option",
-  "tests/test_meals.py::DatabaseTest::test_delete_meal",
-  "tests/test_meals.py::DatabaseTest::test_get_menu",
-  "tests/test_meals.py::DatabaseTest::test_update_meal",
-  "tests/test_meals.py::DatabaseTest::test_update_non_existing_meal",
-  "tests/test_orders.py::DatabaseTest::test_create_order",
-  "tests/test_orders.py::DatabaseTest::test_get_all_orders",
-  "tests/test_orders.py::DatabaseTest::test_get_order",
-  "tests/test_orders.py::DatabaseTest::test_get_orders_for_a_user",
-  "tests/test_orders.py::DatabaseTest::test_update_order_status",
-  "tests/test_users.py::DatabaseTest::test_create_user",
-  "tests/test_users.py::DatabaseTest::test_invalid_confirm_password",
-  "tests/test_users.py::DatabaseTest::test_invalid_username_login",
-  "tests/test_users.py::DatabaseTest::test_user_login"
+  "tests/test_db.py::DBTestCase::test_update_order_status"
 ]

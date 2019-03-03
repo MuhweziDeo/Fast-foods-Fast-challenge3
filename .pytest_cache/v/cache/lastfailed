@@ -1,1 +1,16 @@
-{}
+{
+  "tests/test_db.py::DBTestCase::test_create_meal_option": true,
+  "tests/test_db.py::DBTestCase::test_create_order": true,
+  "tests/test_db.py::DBTestCase::test_create_user": true,
+  "tests/test_db.py::DBTestCase::test_delete_meal_option": true,
+  "tests/test_db.py::DBTestCase::test_find_user_by_username": true,
+  "tests/test_db.py::DBTestCase::test_get_all_orders": true,
+  "tests/test_db.py::DBTestCase::test_get_menu": true,
+  "tests/test_db.py::DBTestCase::test_get_order": true,
+  "tests/test_db.py::DBTestCase::test_get_order_history_for_a_user": true,
+  "tests/test_db.py::DBTestCase::test_update_meal_option": true,
+  "tests/test_db.py::DBTestCase::test_update_order_status": true,
+  "tests/test_meals.py": true,
+  "tests/test_orders.py": true,
+  "tests/test_users.py": true
+}
