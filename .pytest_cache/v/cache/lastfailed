@@ -1,5 +1,1 @@
-{
-  "tests/test_meals.py::DatabaseTest": true,
-  "tests/test_orders.py::DatabaseTest": true,
-  "tests/test_users.py::DatabaseTest": true
-}
+{}

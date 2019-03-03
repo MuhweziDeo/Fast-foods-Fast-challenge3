@@ -42,7 +42,7 @@ class DBTestCase(unittest.TestCase):
         query = self.dbmenu.add_meal('pizza', 4000)
         query = self.dborders.create_order("location", 4, 1, 'pizza')
         query = self.dborders.get_order_history_for_a_user(1)
-        self.assertIn('orders for user with id 1', str(query))
+        self.assertIn('user_orders', str(query))
 
     def test_get_all_orders(self):
         query = self.dbusers.register_user('dee', 'dee')

@@ -95,7 +95,7 @@ class DatabaseTest(unittest.TestCase):
                           headers={'Authorization':
                                    'Bearer {}'.format(self.token)}
                           )
-    self.assertIn('orders for user with id 2', str(res.data))
+    self.assertIn('user_orders', str(res.data))
 
   def test_get_all_orders(self):
     '''login admin user'''

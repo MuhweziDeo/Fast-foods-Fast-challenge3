@@ -30,7 +30,7 @@ class Orders(DB):
         self.real_dic_cursor(query)
         user_orders = self.cur.fetchall()
         if user_orders:
-            return {'orders for user with id {}'.format(user_id): user_orders}
+            return {'user_orders': user_orders}
         return {'message': 'You havent placed any orders yet'}
 
     def get_all_orders(self):
