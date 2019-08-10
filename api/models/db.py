@@ -8,14 +8,14 @@ from datetime import datetime
 
 class DB():
   def __init__(self):
-    '''INIT DB CLASS'''
+    """INIT DB CLASS"""
     try:
       if os.getenv('APP_SETTINGS') == "testing":
         self.connection = psycopg2.connect(
             'postgresql://postgres:sudo@127.0.0.1:5432/fastfoods_test')
       elif os.getenv('APP_SETTINGS') == "development":
         self.connection = psycopg2.connect(
-            'postgresql://postgres:sudo@127.0.0.1:5432/apimain')
+            'postgresql://postgres:@127.0.0.1:5432/flasky')
       else:
         self.connection = psycopg2.connect(
             os.getenv('DATABASE_URL'))

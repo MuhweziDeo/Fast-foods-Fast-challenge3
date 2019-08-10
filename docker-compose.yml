@@ -1,0 +1,19 @@
+version: "3"
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+    environment:
+      APP_SETTINGS: "production"
+      DATABASE_URL: "postgres://postgres:postgres@database/flasky"
+  database:
+    image: "postgres"
+    expose:
+      - '5432'
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_DB: "flasky"
